@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Login = () => {
+const Signup = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -10,16 +11,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("http://localhost:5000/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, email, password }),
       });
       const data = await response.json();
       if (data.success) {
-        navigate("/profile");
+        navigate("/login");
       } else {
         setError(data.message);
       }
@@ -38,7 +39,14 @@ const Login = () => {
           onSubmit={handleSubmit}
           className="bg-white p-8 shadow-lg rounded-lg w-3/4 space-y-4"
         >
-          <h2 className="text-2xl font-bold">Login</h2>
+          <h2 className="text-2xl font-bold">Sign Up</h2>
+          <input
+            type="text"
+            placeholder="Username"
+            className="w-full border p-2 rounded-md"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
           <input
             type="email"
             placeholder="Email"
@@ -55,12 +63,12 @@ const Login = () => {
           />
           {error && <div className="text-red-500 text-sm">{error}</div>}
           <button className="bg-blue-500 text-white px-4 py-2 rounded-md w-full">
-            Login
+            Sign Up
           </button>
           <div className="text-center">
             <p>
-              Don't have an account?{" "}
-              <span className="text-blue-500 cursor-pointer">Sign Up</span>
+              Already have an account?{" "}
+              <span className="text-blue-500 cursor-pointer">Login</span>
             </p>
           </div>
         </form>
@@ -69,4 +77,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
