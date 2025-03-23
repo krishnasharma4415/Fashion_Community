@@ -1,2 +1,5 @@
 node_modules
 dataset
+models
+image_embeddings.csv
+Content_Filtering.ipynb
