@@ -1,39 +1,21 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+// src/components/Navbar.js
+import React from "react";
+import { Link } from "react-router-dom";
+import { FiSearch, FiHeart, FiUser } from "react-icons/fi";
 
 const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check if user is logged in
-    setIsLoggedIn(!!localStorage.getItem("authToken"));
-  }, []);
-
-  const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    setIsLoggedIn(false);
-    navigate("/login");
-  };
-
-  return (
-    <nav className="p-4 bg-gray-800 text-white flex justify-between">
-      <div className="text-xl font-bold">
-        <Link to="/">Fashion Platform</Link>
-      </div>
-      <ul className="flex gap-4">
-        <li><Link to="/">Home</Link></li>
-        {isLoggedIn ? (
-          <>
-            <li><Link to="/profile">Profile</Link></li>
-            <li><button onClick={handleLogout}>Logout</button></li>
-          </>
-        ) : (
-          <li><Link to="/login">Login</Link></li>
-        )}
-      </ul>
-    </nav>
-  );
+    return (
+        <nav className="flex justify-between p-4 bg-white shadow-md fixed w-full top-0 z-10">
+            <Link to="/" className="text-xl font-bold">FashionHub</Link>
+            <div className="flex space-x-4">
+                <FiSearch className="text-xl cursor-pointer" />
+                <FiHeart className="text-xl cursor-pointer" />
+                <Link to="/profile/1">
+                    <FiUser className="text-xl cursor-pointer" />
+                </Link>
+            </div>
+        </nav>
+    );
 };
 
 export default Navbar;

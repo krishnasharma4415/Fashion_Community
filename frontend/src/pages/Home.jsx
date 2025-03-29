@@ -1,23 +1,19 @@
+import React from "react";
 import PostCard from "../components/PostCard";
 
 const Home = () => {
-  return (
-    <div className="bg-gray-100 min-h-screen">
-      <div className="flex p-6">
-        <div className="flex-1 space-y-6">
-          {[...Array(5)].map((_, idx) => (
-            <PostCard
-              key={idx}
-              username="User Name"
-              userImg="https://via.placeholder.com/50"
-              postImg="https://via.placeholder.com/500"
-              caption="This is a sample caption with #hashtags for a post. ✨"
-            />
-          ))}
+    const posts = [
+        { id: 1, image: "https://via.placeholder.com/300", user: "Jane Doe", likes: 120 },
+        { id: 2, image: "https://via.placeholder.com/300", user: "John Smith", likes: 98 },
+    ];
+
+    return (
+        <div className="pt-16 grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
+            {posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+            ))}
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Home;

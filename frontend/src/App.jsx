@@ -5,6 +5,9 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Navbar from "./components/Navbar";
 import Explore from "./pages/Explore";
+import Footer from "./components/Footer";
+import Marketplace from "./pages/Marketplace";
+import PostDetails from "./pages/PostDetails";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const App = () => {
@@ -15,8 +18,13 @@ const App = () => {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/explore" element={<Explore />} />
-      <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <Route path ="/home" element={<Home />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/marketplace" element={<Marketplace />} />
+      <Route path="/post/:id" element={<PostDetails />} />
     </Routes>
+    <Footer />
+
     </>
   );
 };
