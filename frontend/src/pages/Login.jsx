@@ -10,15 +10,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5000/api/login", {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
+  
       const data = await response.json();
       if (data.success) {
+        localStorage.setItem("token", data.token); // Store JWT token
+        localStorage.setItem("user", JSON.stringify(data.user)); // Store user info
         navigate("/profile");
       } else {
         setError(data.message);

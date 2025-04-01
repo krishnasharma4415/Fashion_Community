@@ -8,7 +8,7 @@ import Explore from "./pages/Explore";
 import Footer from "./components/Footer";
 import Marketplace from "./pages/Marketplace";
 import PostDetails from "./pages/PostDetails";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/PrivateRoute";
 
 const App = () => {
   return (
@@ -19,7 +19,7 @@ const App = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/explore" element={<Explore />} />
       <Route path ="/home" element={<Home />} />
-      <Route path="/profile" element={<Profile />} />
+      <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
       <Route path="/marketplace" element={<Marketplace />} />
       <Route path="/post/:id" element={<PostDetails />} />
     </Routes>
