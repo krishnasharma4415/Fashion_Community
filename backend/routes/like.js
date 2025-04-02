@@ -15,7 +15,10 @@ router.post("/:postId", auth, async (req, res) => {
 
         const newLike = new Like({ userId: req.user.id, postId: req.params.postId });
         await newLike.save();
-        res.status(201).json(newLike);
+
+        await Post.findByIdAndUpdate(req.params.postId, { $inc: { likeCount: 1 } });
+
+        res.status(201).json({ message: "Post liked", like: newLike });
     } catch (err) {
         res.status(500).json({ message: "Server error" });
     }
@@ -25,6 +28,8 @@ router.delete("/:postId", auth, async (req, res) => {
     try {
         const like = await Like.findOneAndDelete({ userId: req.user.id, postId: req.params.postId });
         if (!like) return res.status(404).json({ message: "Like not found" });
+
+        await Post.findByIdAndUpdate(req.params.postId, { $inc: { likeCount: -1 } });
 
         res.json({ message: "Post unliked successfully" });
     } catch (err) {

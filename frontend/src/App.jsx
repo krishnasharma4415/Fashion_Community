@@ -7,6 +7,7 @@ import Explore from "./pages/Explore";
 import Footer from "./components/Footer";
 import PostDetails from "./pages/PostDetails";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
     <Routes>  
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       <Route path="/explore" element={<Explore />} />
       <Route path ="/home" element={<Home />} />
       <Route path="/profile" element={<Profile />} />

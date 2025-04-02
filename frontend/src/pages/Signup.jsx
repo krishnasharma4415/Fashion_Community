@@ -16,10 +16,11 @@ const Signup = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
       });
-  
+
       const data = await response.json();
-      if (data.success) {
-        navigate("/login");
+      if (response.ok) {
+        localStorage.setItem("userId", data.userId); // Store user ID temporarily
+        navigate("/profile-setup"); // Redirect to profile setup page
       } else {
         setError(data.message);
       }
@@ -34,41 +35,15 @@ const Signup = () => {
         <h1 className="text-4xl font-bold">Join the Fashion Community!</h1>
       </div>
       <div className="w-1/2 flex flex-col items-center justify-center p-8">
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white p-8 shadow-lg rounded-lg w-3/4 space-y-4"
-        >
+        <form onSubmit={handleSubmit} className="bg-white p-8 shadow-lg rounded-lg w-3/4 space-y-4">
           <h2 className="text-2xl font-bold">Sign Up</h2>
-          <input
-            type="text"
-            placeholder="Username"
-            className="w-full border p-2 rounded-md"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full border p-2 rounded-md"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full border p-2 rounded-md"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
+          <input type="text" placeholder="Username" className="w-full border p-2 rounded-md" value={username} onChange={(e) => setUsername(e.target.value)} />
+          <input type="email" placeholder="Email" className="w-full border p-2 rounded-md" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <input type="password" placeholder="Password" className="w-full border p-2 rounded-md" value={password} onChange={(e) => setPassword(e.target.value)} />
           {error && <div className="text-red-500 text-sm">{error}</div>}
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-md w-full">
-            Sign Up
-          </button>
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-md w-full">Sign Up</button>
           <div className="text-center">
-            <p>
-              Already have an account?{" "}
-              <span className="text-blue-500 cursor-pointer">Login</span>
-            </p>
+            <p>Already have an account? <span className="text-blue-500 cursor-pointer" onClick={() => navigate("/login")}>Login</span></p>
           </div>
         </form>
       </div>

@@ -18,9 +18,9 @@ const Login = () => {
   
       const data = await response.json();
       if (data.success) {
-        localStorage.setItem("token", data.token); // Store JWT token
-        localStorage.setItem("user", JSON.stringify(data.user)); // Store user info
-        navigate("/profile");
+        localStorage.setItem("token", data.token); 
+        localStorage.setItem("user", JSON.stringify(data.user)); 
+        navigate("/");
       } else {
         setError(data.message);
       }

@@ -7,17 +7,20 @@ const router = express.Router();
 
 router.post("/:postId", auth, async (req, res) => {
     try {
-        const { text } = req.body;
+        const { content } = req.body;
         const post = await Post.findById(req.params.postId);
         if (!post) return res.status(404).json({ message: "Post not found" });
 
         const newComment = new Comment({
             userId: req.user.id,
             postId: req.params.postId,
-            text,
+            content,
         });
 
         await newComment.save();
+
+        await Post.findByIdAndUpdate(req.params.postId, { $inc: { commentCount: 1 } });
+
         res.status(201).json(newComment);
     } catch (err) {
         res.status(500).json({ message: "Server error" });
@@ -43,6 +46,9 @@ router.delete("/:commentId", auth, async (req, res) => {
         }
 
         await comment.deleteOne();
+
+        await Post.findByIdAndUpdate(comment.postId, { $inc: { commentCount: -1 } });
+
         res.json({ message: "Comment deleted successfully" });
     } catch (err) {
         res.status(500).json({ message: "Server error" });
