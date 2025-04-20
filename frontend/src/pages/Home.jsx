@@ -1,19 +1,30 @@
-import React from "react";
-import PostCard from "../components/PostCard";
+import Navbar from "../Components/Navbar";
+import Sidebar from "../Components/Sidebar";
+import PostCard from "../Components/PostCard";
+import Suggestions from "../Components/Suggestions";
 
-const Home = () => {
-    const posts = [
-        { id: 1, image: "https://via.placeholder.com/300", user: "Jane Doe", likes: 120 },
-        { id: 2, image: "https://via.placeholder.com/300", user: "John Smith", likes: 98 },
-    ];
 
-    return (
-        <div className="pt-16 grid grid-cols-2 md:grid-cols-3 gap-4 p-4">
-            {posts.map((post) => (
-                <PostCard key={post.id} post={post} />
-            ))}
+export default function Home() {
+  return (
+    <div className="bg-[#f2ecf9] h-screen flex flex-col">
+      <Navbar />
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar - Visible with collapsible toggle */}
+        <Sidebar />
+
+        {/* Post Feed - Scrollable Middle */}
+        <div className="flex-1 overflow-y-auto px-4 py-6">
+          <PostCard />
+          <PostCard />
+          <PostCard />
+          <PostCard />
         </div>
-    );
-};
 
-export default Home;
+        {/* Suggestions - Sticky Right (optional on mobile) */}
+        <div className="hidden lg:block sticky top-0 h-full w-[250px]">
+          <Suggestions />
+        </div>
+      </div>
+    </div>
+  );
+}
