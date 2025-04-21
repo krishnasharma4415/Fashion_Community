@@ -11,8 +11,9 @@ const Signup = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
+<<<<<<< HEAD
   
     if (!email || !username || !password || !confirmPassword) {
       setError('Please fill all fields!');
@@ -44,9 +45,36 @@ const Signup = () => {
       }
     } catch (err) {
       setError('Something went wrong. Please try again.');
+=======
+
+    if (!email || !username || !password || !confirmPassword) {
+      setError('Please fill all fields!');
+      return;
+>>>>>>> 488586a4e106d07ea747b4ccfbd49832c2194c19
     }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      return;
+    }
+
+    // Simulate signup success
+    setIsSuccess(true);
+    setError('');
+    setTimeout(() => navigate('/login'), 3000);
   };
   
+
+  if (isSuccess) {
+    return (
+      <div className="auth-form animate-slideup">
+        <div className="success-message">
+          <h2>🎉 Account Created!</h2>
+          <p>Redirecting to login page...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (isSuccess) {
     return (

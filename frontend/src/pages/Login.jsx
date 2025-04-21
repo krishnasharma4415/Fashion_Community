@@ -12,8 +12,18 @@ const LoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+<<<<<<< HEAD
   
     if (!email || !password) {
+=======
+
+    // Simulate login
+    if (email && password) {
+      localStorage.setItem('authToken', 'dummy-token');
+      setIsAuthenticated(true);
+      navigate('/Home', { replace: true });
+    } else {
+>>>>>>> 488586a4e106d07ea747b4ccfbd49832c2194c19
       setError('Please fill all fields!');
       return;
     }
