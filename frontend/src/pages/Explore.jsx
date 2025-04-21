@@ -78,6 +78,8 @@ export default function ExplorePage() {
   })}
 </div>
 
+
+
  {/* Footer */}
  <div className="mt-10 text-center text-sm text-gray-500">
     User Since: Jan 2025 <br />
@@ -89,3 +91,4 @@ export default function ExplorePage() {
     
   );
 }
+      
