@@ -17,7 +17,7 @@ const LoginPage = () => {
     if (email && password) {
       localStorage.setItem('authToken', 'dummy-token');
       setIsAuthenticated(true);
-      navigate('/', { replace: true });
+      navigate('/Home', { replace: true });
     } else {
       setError('Please fill all fields!');
     }
@@ -43,7 +43,7 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit">Login</button>
+          <button type="submit">Login</button> 
         </form>
         <p className="auth-switch">
           Don't have an account? <Link to="/signup">Sign up</Link>
