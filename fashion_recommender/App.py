@@ -18,11 +18,9 @@ def get_recommendations(user_id):
         # Validate ObjectId format
         user_object_id = ObjectId(user_id)
         
-        # Create a new event loop for async call
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
+        # Use asyncio.run to run async function inside Flask route
+        recs = asyncio.run(service.generate_recommendations(user_object_id))
         
-        recs = loop.run_until_complete(service.generate_recommendations(user_object_id))
         return jsonify(recs)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
