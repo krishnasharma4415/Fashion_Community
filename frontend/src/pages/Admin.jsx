@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaHome, FaUsers, FaFlag, FaBell, FaBars } from "react-icons/fa";
 
@@ -22,8 +22,41 @@ const recentUsers = [
 
 const Admin = () => {
   const [isOpen, setIsOpen] = useState(true);
+  const [stats, setStats] = useState({});
+  const [recentUsers, setRecentUsers] = useState([]);
   const toggleSidebar = () => setIsOpen(!isOpen);
-  
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/admin/stats", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setStats(data);
+      } catch (err) {
+        console.error("Error fetching stats:", err);
+      }
+    };
+
+    const fetchRecentUsers = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/admin/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const users = await res.json();
+        setRecentUsers(users.slice(-7).reverse()); // Get latest 7
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
+    };
+
+    fetchStats();
+    fetchRecentUsers();
+  }, []);
+
   // Mock data for chart
   const chartData = {
     dates: ["15 Apr", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "21 Apr"],
@@ -50,7 +83,7 @@ const Admin = () => {
         <div className="p-4 font-bold text-xl">
           FASHION.
         </div>
-        
+
         {/* Top section with navigation items */}
         <div className="flex flex-col items-start py-8 px-4 space-y-6 flex-grow">
           {navItems.map((item, index) => (
@@ -84,28 +117,29 @@ const Admin = () => {
             </svg>
           </div>
         </div>
-        
+
         <h1 className="font-bold text-2xl mb-6">Dashboard</h1>
-        
-        {/* Stats cards row */}
+
+        Stats cards row
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div className="bg-[#e2e2da] rounded-lg p-4 shadow-sm">
             <p className="text-center font-semibold mb-2">Total Users</p>
-            <p className="text-4xl font-bold text-center">{statsData.totalUsers}</p>
+            <p className="text-4xl font-bold text-center">{stats.userCount || 0}</p>
           </div>
           <div className="bg-[#e2e2da] rounded-lg p-4 shadow-sm">
             <p className="text-center font-semibold mb-2">Total Posts</p>
-            <p className="text-4xl font-bold text-center">{statsData.totalPosts}</p>
+            <p className="text-4xl font-bold text-center">{stats.postCount || 0}</p>
           </div>
           <div className="bg-[#e2e2da] rounded-lg p-4 shadow-sm">
-            <p className="text-center font-semibold mb-2">Flagged Posts</p>
-            <p className="text-4xl font-bold text-center">{statsData.flaggedPosts < 10 ? "0" + statsData.flaggedPosts : statsData.flaggedPosts}</p>          </div>
+            <p className="text-center font-semibold mb-2">Comments</p>
+            <p className="text-4xl font-bold text-center">{stats.commentCount || 0}</p>
+          </div>
           <div className="bg-[#e2e2da] rounded-lg p-4 shadow-sm">
-            <p className="text-center font-semibold mb-2">Active Users</p>
-            <p className="text-4xl font-bold text-center">{statsData.activeUsers}</p>
+            <p className="text-center font-semibold mb-2">Likes</p>
+            <p className="text-4xl font-bold text-center">{stats.likeCount || 0}</p>
           </div>
         </div>
-        
+
         {/* New Users Chart and Recent Users sections */}
         <div className="flex flex-col lg:flex-row gap-6">
           {/* New Users Joined Graph */}
@@ -113,7 +147,7 @@ const Admin = () => {
             <div className="flex justify-between items-center mb-3">
               <h2 className="font-semibold">New Users Joined</h2>
               <div className="flex items-center">
-                <span className="text-sm text-gray-600">{chartData.dates[0]} - {chartData.dates[chartData.dates.length-1]}</span>
+                <span className="text-sm text-gray-600">{chartData.dates[0]} - {chartData.dates[chartData.dates.length - 1]}</span>
                 <button className="ml-2 bg-white p-2 rounded">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clipRule="evenodd" />
@@ -138,7 +172,7 @@ const Admin = () => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-                
+
                 {/* Add some dots at data points */}
                 <circle cx="0" cy="200" r="5" fill="#6495ED" />
                 <circle cx="150" cy="200" r="5" fill="#6495ED" />
@@ -149,23 +183,25 @@ const Admin = () => {
               </svg>
             </div>
           </div>
-          
+
           {/* Recent Users */}
           <div className="w-full lg:w-1/3">
             <h2 className="font-semibold mb-3">Recent Users</h2>
             <div className="bg-[#e2e2da] rounded-lg p-4">
               <div className="space-y-3">
-                {recentUsers.map(user => (
-                  <div key={user.id} className="flex items-center justify-between">
+                {recentUsers.map((user) => (
+                  <div key={user._id} className="flex items-center justify-between">
                     <div className="flex items-center">
-                      <img 
-                        src={user.avatar} 
-                        alt={user.name} 
+                      <img
+                        src={user.profilePicture || "https://i.pravatar.cc/150?img=12"}
+                        alt={user.username}
                         className="w-8 h-8 rounded-full mr-3"
                       />
-                      <span className="text-sm">{user.name}</span>
+                      <span className="text-sm">{user.username}</span>
                     </div>
-                    <span className="text-xs text-gray-500">Joined {user.joinedTime}</span>
+                    <span className="text-xs text-gray-500">
+                      Joined {new Date(user.createdAt).toLocaleDateString()}
+                    </span>
                   </div>
                 ))}
               </div>

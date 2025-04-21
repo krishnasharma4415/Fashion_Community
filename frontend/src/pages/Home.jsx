@@ -28,6 +28,8 @@ const useFetchPosts = () => {
 };
 
 export default function Home() {
+  const { posts, loading } = useFetchPosts();
+
   return (
     <div className="bg-[#f2ecf9] h-screen flex flex-col">
       <Navbar />
@@ -37,10 +39,13 @@ export default function Home() {
 
         {/* Post Feed - Scrollable Middle */}
         <div className="flex-1 overflow-y-auto px-4 py-6">
-          <PostCard />
-          <PostCard />
-          <PostCard />
-          <PostCard />
+          {loading ? (
+            <div>Loading posts...</div>
+          ) : (
+            posts.map(post => (
+              <PostCard key={post._id} post={post} />
+            ))
+          )}
         </div>
 
         {/* Suggestions - Sticky Right (optional on mobile) */}

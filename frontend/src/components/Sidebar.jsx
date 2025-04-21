@@ -10,7 +10,7 @@ const Sidebar = () => {
   const navItems = [
     { icon: <FaHome />, label: "Home", path: "/" },
     { icon: <FaCompass />, label: "Explore", path: "/Explore" },
-    { icon: <FaPlusSquare />, label: "New Post", path: "/PostCreation" },
+    { icon: <FaPlusSquare />, label: "New Post", path: "/post-creation" },
     { icon: <FaBell />, label: "Updates", path: "/Updates" },
   ];
 

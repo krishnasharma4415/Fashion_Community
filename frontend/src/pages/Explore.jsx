@@ -15,7 +15,7 @@ export default function ExplorePage() {
       try {
         const response = await axios.get("/api/posts/");
         console.log("Response Data:", response.data);
-        
+
         if (Array.isArray(response.data)) {
           setSquares(response.data);
         } else {
@@ -30,7 +30,7 @@ export default function ExplorePage() {
         setLoading(false);
       }
     };
-  
+
     fetchPosts();
   }, []);
 
@@ -41,13 +41,13 @@ export default function ExplorePage() {
       style={{ width: "419px", height }}
     >
       <img
-        src={post.imageUrl}
+        src={post.media?.[0]?.url}
         alt={post.caption || "Fashion post"}
         className="w-full h-4/5 object-cover"
       />
       <div className="p-2 h-1/5">
-        <p className="font-semibold truncate">{post.user?.username || "Unknown"}</p>
-        <p className="text-sm text-gray-700 truncate">{post.caption || "No caption"}</p>
+      <p className="font-semibold truncate">{post.userId?.username || "Unknown"}</p>
+      <p className="text-sm text-gray-700 truncate">{post.caption || "No caption"}</p>
       </div>
     </div>
   );

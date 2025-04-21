@@ -129,33 +129,59 @@ router.get('/stats', auth, admin, async (req, res) => {
 
 // ---------------------- REPORT MANAGEMENT ----------------------
 
+// routes/admin.js
 router.get('/reports', auth, admin, async (req, res) => {
     try {
-        const reports = await Report.find().populate('userId', 'username email');
-        res.json(reports);
+      const reports = await Report.find()
+        .populate('reporter', 'username email')
+        .lean();
+  
+      // Fetch target info based on report type
+      const populateTargets = async (reports) => {
+        const populated = await Promise.all(reports.map(async (r) => {
+          let targetDoc = null;
+  
+          if (r.type === 'post') {
+            targetDoc = await Post.findById(r.target).select('caption');
+          } else if (r.type === 'comment') {
+            targetDoc = await Comment.findById(r.target).select('content');
+          } else if (r.type === 'user') {
+            targetDoc = await User.findById(r.target).select('username email');
+          }
+  
+          return {
+            ...r,
+            targetData: targetDoc || null,
+          };
+        }));
+  
+        return populated;
+      };
+  
+      const reportsWithTarget = await populateTargets(reports);
+  
+      res.json(reportsWithTarget);
     } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+      console.error("Error fetching reports:", err);
+      res.status(500).json({ message: 'Server error' });
     }
-});
+  });  
 
 router.put('/reports/:id', auth, admin, async (req, res) => {
-    try {
-        const { status } = req.body;
-        if (!['reviewed', 'resolved'].includes(status)) {
-            return res.status(400).json({ message: 'Invalid status' });
-        }
-
-        const report = await Report.findByIdAndUpdate(req.params.id, { status }, { new: true });
-
-        if (!report) {
-            return res.status(404).json({ message: 'Report not found' });
-        }
-
-        res.json({ message: 'Report updated successfully', report });
-
-    } catch (err) {
-        res.status(500).json({ message: 'Server error' });
+  try {
+    const { status } = req.body;
+    if (!['reviewed', 'resolved', 'dismissed', 'actioned'].includes(status)) {
+      return res.status(400).json({ message: 'Invalid status' });
     }
+
+    const report = await Report.findByIdAndUpdate(req.params.id, { status }, { new: true });
+    if (!report) return res.status(404).json({ message: 'Report not found' });
+
+    res.json({ message: 'Report updated successfully', report });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error' });
+  }
 });
+
 
 module.exports = router;
