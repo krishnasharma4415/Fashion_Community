@@ -1,21 +1,17 @@
-// src/components/Navbar.js
-import React from "react";
-import { Link } from "react-router-dom";
-import { FiSearch, FiHeart, FiUser } from "react-icons/fi";
+import { Link } from 'react-router-dom';
+import { FaUser } from 'react-icons/fa';
 
-const Navbar = () => {
-    return (
-        <nav className="flex justify-between p-4 bg-white shadow-md fixed w-full top-0 z-10">
-            <Link to="/" className="text-xl font-bold">FashionHub</Link>
-            <div className="flex space-x-4">
-                <FiSearch className="text-xl cursor-pointer" />
-                <FiHeart className="text-xl cursor-pointer" />
-                <Link to="/profile/1">
-                    <FiUser className="text-xl cursor-pointer" />
-                </Link>
-            </div>
-        </nav>
-    );
-};
+export default function Navbar() {
+  return (
+    <nav className="w-full flex justify-between items-center px-6 py-4 bg-[#8c9cc8] text-black shadow-md">
 
-export default Navbar;
+      <Link to="/" className="font-bold text-xl">FashionHub</Link>
+      <div className="flex gap-6">
+
+      <Link to="/Profile" className="flex items-center gap-2">
+          <FaUser /> {/* Icon added here */}
+        </Link>
+      </div>
+    </nav>
+  );
+}
