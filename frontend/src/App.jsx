@@ -8,6 +8,7 @@ import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
 import './index.css';
 import './App.css';
+import Admin from "./pages/Admin.jsx";
 
 export default function App() {
 
@@ -21,6 +22,7 @@ export default function App() {
       <Route path="/post-creation" element={<PostCreation />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/admin" element={<Admin />} />
     </Routes>
   );
 }
