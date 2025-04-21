@@ -1,6 +1,7 @@
-
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LoginPage from "./pages/LoginPage.jsx";
+import SignupPage from "./pages/SignupPage.jsx";
 import Home from "./pages/Home.jsx";
 import Updates from "./pages/Updates.jsx"; 
 import Navbar from "./Components/Navbar.jsx";
@@ -11,15 +12,21 @@ import Profile from "./pages/ProfilePage.jsx";
 import Explore from "./pages/Explore.jsx";
 import SearchAndFilters  from "./Components/SearchAndFilters.jsx";
 import UpdateCard from "./Components/UpdateCard.jsx"; 
-import PostCreation from "./pages/PostCreation.jsx"; 
+import PostCreation from "./pages/PostCreation.jsx";  
+import { AuthProvider } from "./context/AuthContext";
 import './index.css';
 import './App.css'; // Import your CSS file here
 
 export default function App() {
+
   return (
+    
+    <AuthProvider>
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/Home" element={<Home />} />
         <Route path="/Navbar" element={<Navbar />} />
         <Route path="/Sidebar" element={<Sidebar />} />
         <Route path="/PostCard" element={<PostCard />} />
@@ -33,6 +40,7 @@ export default function App() {
         {/* Add more routes as needed */}
       </Routes>
     </Router>
+    </AuthProvider>
+    
   );
-} 
-
+}
