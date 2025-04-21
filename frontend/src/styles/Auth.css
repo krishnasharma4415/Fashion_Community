@@ -1,0 +1,111 @@
+
+/* Auth Container */
+.auth-container {
+    min-height: 100vh;
+    background: white;
+  }
+  
+  /* Navbar */
+  .auth-navbar {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+  }
+  
+  .auth-links a {
+    color: white;
+    margin-left: 1rem;
+    text-decoration: none;
+  }
+  
+  /* Form */
+  .auth-form {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .auth-form input {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+  }
+  
+  .auth-form button {
+    width: 100%;
+    padding: 0.8rem;
+    background-color: #9FB3DF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Animations */
+  .animate-slideup {
+    animation: slideUp 0.5s ease-out;
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Success Message Styles */
+  .success-message {
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .success-message h2 {
+    color: #4CAF50;
+    margin-bottom: 1rem;
+  }
+  
+  .success-message p {
+    color: #666;
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  /* Animation for success message */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  
+  .auth-form h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  
+  .auth-form button:hover {
+    background-color: #8a9ec7;
+  }
+  
+  .error-message {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .auth-switch {
+    text-align: center;
+    margin-top: 1rem;
+    color: #666;
+  }
+  
+  .auth-switch a {
+    color: #9FB3DF;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
