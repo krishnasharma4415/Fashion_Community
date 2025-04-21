@@ -1,20 +1,14 @@
-import { createContext, useState, useMemo } from "react";
-import PropTypes from "prop-types";
+// src/context/AuthContext.js
+import { createContext, useState } from "react";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const authValue = useMemo(() => ({ user, setUser }), [user]);
-
-    return (
-        <AuthContext.Provider value={authValue}>
-            {children}
-        </AuthContext.Provider>
-    );
-};
-
-AuthProvider.propTypes = {
-    children: PropTypes.node.isRequired,
+  return (
+    <AuthContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
