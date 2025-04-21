@@ -10,18 +10,37 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Simulate login
-    if (email && password) {
-      localStorage.setItem('authToken', 'dummy-token');
-      setIsAuthenticated(true);
-      navigate('/', { replace: true });
-    } else {
+  
+    if (!email || !password) {
       setError('Please fill all fields!');
+      return;
+    }
+  
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        localStorage.setItem('authToken', data.token); // Save the token
+        setIsAuthenticated(true);
+        navigate('/Home', { replace: true });
+      } else {
+        setError(data.message || 'Login failed!');
+      }
+    } catch (err) {
+      setError('Something went wrong. Please try again.');
     }
   };
+  
 
   return (
     <div className="auth-container">
@@ -43,7 +62,7 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit">Login</button>
+          <button type="submit">Login</button> 
         </form>
         <p className="auth-switch">
           Don't have an account? <Link to="/signup">Sign up</Link>

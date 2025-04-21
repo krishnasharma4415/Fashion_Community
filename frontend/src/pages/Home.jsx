@@ -2,7 +2,30 @@ import Navbar from "../Components/Navbar";
 import Sidebar from "../Components/Sidebar";
 import PostCard from "../Components/PostCard";
 import Suggestions from "../Components/Suggestions";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
+const useFetchPosts = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await axios.get("/api/posts");
+        setPosts(res.data);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  return { posts, loading };
+};
 
 export default function Home() {
   return (

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import Navbar from "../Components/Navbar";
+import axios from "axios";
 
 const NewPost = () => {
   const [image, setImage] = useState(null);
@@ -14,9 +15,37 @@ const NewPost = () => {
     }
   };
 
-  const handleSubmit = () => {
-    // Backend connection can go here later
-    console.log("Post submitted:", { image, caption, tags });
+  const handleSubmit = async () => {
+    try {
+      if (!image || !caption) {
+        alert("Image and caption are required.");
+        return;
+      }
+  
+      const fileInput = document.querySelector('input[type="file"]');
+      const file = fileInput.files[0];
+  
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("caption", caption);
+      formData.append("tags", tags);
+  
+      const response = await axios.post("/api/posts", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+  
+      console.log("Post created successfully:", response.data);
+      // Optionally redirect or reset form
+      setImage(null);
+      setCaption("");
+      setTags("");
+      alert("Post uploaded!");
+    } catch (error) {
+      console.error("Error uploading post:", error);
+      alert("Failed to upload post.");
+    }
   };
 
   return (

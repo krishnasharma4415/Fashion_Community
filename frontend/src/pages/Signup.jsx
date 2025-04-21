@@ -1,52 +1,98 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import '../Styles/Auth.css';
 
 const Signup = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    if (!email || !username || !password || !confirmPassword) {
+      setError('Please fill all fields!');
+      return;
+    }
+  
+    if (password !== confirmPassword) {
+      setError('Passwords do not match!');
+      return;
+    }
+  
     try {
-      const response = await fetch("http://localhost:5000/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, username, password })
       });
-
-      const data = await response.json();
-      if (response.ok) {
-        localStorage.setItem("userId", data.userId); // Store user ID temporarily
-        navigate("/profile-setup"); // Redirect to profile setup page
+  
+      const data = await res.json();
+  
+      if (res.ok) {
+        setIsSuccess(true);
+        setError('');
+        setTimeout(() => navigate('/login'), 3000);
       } else {
-        setError(data.message);
+        setError(data.message || 'Signup failed!');
       }
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError('Something went wrong. Please try again.');
     }
   };
+  
+
+  if (isSuccess) {
+    return (
+      <div className="auth-form animate-slideup">
+        <div className="success-message">
+          <h2>🎉 Account Created!</h2>
+          <p>Redirecting to login page...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
-      <div className="w-1/2 bg-gradient-to-r from-blue-500 to-purple-500 text-white flex items-center justify-center">
-        <h1 className="text-4xl font-bold">Join the Fashion Community!</h1>
-      </div>
-      <div className="w-1/2 flex flex-col items-center justify-center p-8">
-        <form onSubmit={handleSubmit} className="bg-white p-8 shadow-lg rounded-lg w-3/4 space-y-4">
-          <h2 className="text-2xl font-bold">Sign Up</h2>
-          <input type="text" placeholder="Username" className="w-full border p-2 rounded-md" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <input type="email" placeholder="Email" className="w-full border p-2 rounded-md" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <input type="password" placeholder="Password" className="w-full border p-2 rounded-md" value={password} onChange={(e) => setPassword(e.target.value)} />
-          {error && <div className="text-red-500 text-sm">{error}</div>}
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-md w-full">Sign Up</button>
-          <div className="text-center">
-            <p>Already have an account? <span className="text-blue-500 cursor-pointer" onClick={() => navigate("/login")}>Login</span></p>
-          </div>
-        </form>
-      </div>
+    <div className="auth-form animate-slideup">
+      <h2>Sign Up</h2>
+      {error && <p className="error-message">{error}</p>}
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <button type="submit">Sign Up</button>
+      </form>
+      <p className="auth-switch">
+        Already have an account? <Link to="/login">Login</Link>
+      </p>
     </div>
   );
 };
