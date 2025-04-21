@@ -99,8 +99,7 @@ const Admin = () => {
           </div>
           <div className="bg-[#e2e2da] rounded-lg p-4 shadow-sm">
             <p className="text-center font-semibold mb-2">Flagged Posts</p>
-            <p className="text-4xl font-bold text-center">{statsData.flaggedPosts < 10 ? 0${statsData.flaggedPosts} : statsData.flaggedPosts}</p>
-          </div>
+            <p className="text-4xl font-bold text-center">{statsData.flaggedPosts < 10 ? "0" + statsData.flaggedPosts : statsData.flaggedPosts}</p>          </div>
           <div className="bg-[#e2e2da] rounded-lg p-4 shadow-sm">
             <p className="text-center font-semibold mb-2">Active Users</p>
             <p className="text-4xl font-bold text-center">{statsData.activeUsers}</p>
