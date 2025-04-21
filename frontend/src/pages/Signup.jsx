@@ -13,44 +13,10 @@ const Signup = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-<<<<<<< HEAD
-  
-    if (!email || !username || !password || !confirmPassword) {
-      setError('Please fill all fields!');
-      return;
-    }
-  
-    if (password !== confirmPassword) {
-      setError('Passwords do not match!');
-      return;
-    }
-  
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, username, password })
-      });
-  
-      const data = await res.json();
-  
-      if (res.ok) {
-        setIsSuccess(true);
-        setError('');
-        setTimeout(() => navigate('/login'), 3000);
-      } else {
-        setError(data.message || 'Signup failed!');
-      }
-    } catch (err) {
-      setError('Something went wrong. Please try again.');
-=======
 
     if (!email || !username || !password || !confirmPassword) {
       setError('Please fill all fields!');
       return;
->>>>>>> 488586a4e106d07ea747b4ccfbd49832c2194c19
     }
 
     if (password !== confirmPassword) {
