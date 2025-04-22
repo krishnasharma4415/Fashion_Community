@@ -7,3 +7,4 @@ fashion_recommender/fashion_classifier_full.pth
 fashion_recommender/sample_image_embedding.npy
 .env
 fashion_recommender/cropped_clothing
+uploads
