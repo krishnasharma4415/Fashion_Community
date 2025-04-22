@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../Components/Sidebar";
-import Navbar from "../Components/Navbar";
+import Sidebar from "../components/Sidebar";
+import Navbar from "../components/Navbar";
 import axios from "axios";
 import { Upload, Tag } from "lucide-react";
 
@@ -145,25 +145,35 @@ const NewPost = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f6f0fb]">
+    <div className="bg-[#f2ecf9] min-h-screen pt-20">
+    {/* Top Navbar */}
+    <div className="fixed top-0 left-0 w-full z-20">
+      <Navbar />
+    </div>
+
+    {/* Left Sidebar */}
+    <div className="fixed top-14 left-0 h-[calc(100vh-3.5rem)] w-60 z-10">
       <Sidebar />
+    </div>
 
-      <div className="flex-1 ml-60">
-        <Navbar />
-
+      
         {successMessage && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4 mx-4" role="alert">
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4 mx-auto max-w-3xl" role="alert"
+            style={{ marginTop: '5rem',zIndex: 100  }}
+          >
             <span className="block sm:inline">{successMessage}</span>
           </div>
         )}
 
         {errorMessage && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4 mx-4" role="alert">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4 mx-auto max-w-3xl" role="alert"
+            style={{ marginTop: '5rem',zIndex: 100  }}>
             <span className="block sm:inline">{errorMessage}</span>
           </div>
         )}
 
-        <div className="flex justify-center mt-8">
+         <div className="flex justify-center pt-24 pb-10">
+
           <div className="w-full max-w-6xl bg-white rounded-lg shadow p-4 flex flex-col md:flex-row gap-4">
             {/* Image preview or upload */}
             <div className="w-full md:w-1/2 h-full flex flex-col gap-2 justify-center items-center border border-gray-300 rounded-lg overflow-auto p-4">
@@ -174,7 +184,7 @@ const NewPost = () => {
                       <img
                         src={src}
                         alt={`preview-${index}`}
-                        className="w-full max-h-60 object-cover rounded-md"
+                        className="w-[419px] h-[419px] object-cover rounded-md"
                       />
                       <button
                         onClick={() => removeImage(index)}
@@ -213,9 +223,9 @@ const NewPost = () => {
             <div className="w-full md:w-1/2 flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-xs">
-                  KS
+                  
                 </div>
-                <span className="font-medium">krishna_sharma</span>
+                <span className="font-medium"></span>
               </div>
 
               <Textarea
@@ -255,7 +265,7 @@ const NewPost = () => {
           </div>
         </div>
       </div>
-    </div>
+    
   );
 };
 
