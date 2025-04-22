@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
+import PostCard from "../components/PostCard";
+import PostDetails from "../components/PostDetails";
 import { useNavigate } from "react-router-dom";
 import "../styles/Profile.css";
 
@@ -9,6 +11,7 @@ const ProfilePage = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [savedPosts, setSavedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const openPost = (post) => setSelectedPost(post);
@@ -42,7 +45,28 @@ const ProfilePage = () => {
     fetchData();
   }, []);
 
+  const fetchSavedPosts = async () => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const userId = userData?._id;
+
+    if (!userId) return;
+
+    try {
+      const saved = await fetch(`http://localhost:5000/api/posts/saved/${userId}`).then(res => res.json());
+      setSavedPosts(saved);
+    } catch (error) {
+      console.error("❌ Error fetching saved posts:", error);
+    }
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (tab === "saved") fetchSavedPosts();
+  };
+
   if (loading) return <div className="text-center mt-10 text-lg">Loading profile...</div>;
+
+  const postsToDisplay = activeTab === "posts" ? posts : savedPosts;
 
   return (
     <div className="h-screen flex flex-col">
@@ -79,61 +103,32 @@ const ProfilePage = () => {
           <div className="profile-tabs mt-6">
             <button
               className={`tab ${activeTab === "posts" ? "active" : ""}`}
-              onClick={() => setActiveTab("posts")}
+              onClick={() => handleTabChange("posts")}
             >
               <i className="fas fa-th"></i> POSTS
             </button>
             <button
               className={`tab ${activeTab === "saved" ? "active" : ""}`}
-              onClick={() => setActiveTab("saved")}
+              onClick={() => handleTabChange("saved")}
             >
               <i className="fas fa-bookmark"></i> SAVED
             </button>
           </div>
 
-          <div className="posts-grid mt-4">
-            {posts.map((post) => (
-              <div key={post._id} className="post-item" onClick={() => openPost(post)}>
-                <img
-                  src={
-                    post.media[0]?.url?.startsWith("http")
-                      ? post.media[0].url
-                      : `http://localhost:5000${post.media[0]?.url}`
-                  }
-                  alt={`Post ${post._id}`}
-                />
-                <div className="post-overlay">
-                  <span><i className="fas fa-heart"></i> {post.likeCount || 0}</span>
-                  <span><i className="fas fa-comment"></i> {post.commentCount || 0}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+          {postsToDisplay.length === 0 ? (
+            <div className="text-center mt-10 text-gray-500">
+              {activeTab === "saved" ? "No saved posts yet." : "No posts yet."}
+            </div>
+          ) : (
+            <div className="posts-grid mt-4">
+              {postsToDisplay.map((post) => (
+                <PostCard key={post._id} post={post} onClick={openPost} />
+              ))}
+            </div>
+          )}
 
           {selectedPost && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-              <div className="bg-white rounded-xl p-4 max-w-lg w-full relative shadow-lg">
-                <button
-                  onClick={closePost}
-                  className="absolute top-2 right-3 text-gray-500 hover:text-black text-xl"
-                >
-                  &times;
-                </button>
-                <img
-                  src={
-                    selectedPost.media[0]?.url?.startsWith("http")
-                      ? selectedPost.media[0].url
-                      : `http://localhost:5000${selectedPost.media[0]?.url}`
-                  }
-                  alt="Full Post"
-                  className="w-full rounded-lg object-cover"
-                />
-                <div className="mt-4 text-sm">
-                  <p><i className="fas fa-heart text-red-500"></i> {selectedPost.likeCount || 0} likes</p>
-                  <p><i className="fas fa-comment text-blue-400"></i> {selectedPost.commentCount || 0} comments</p>
-                </div>
-              </div>
-            </div>
+            <PostDetails post={selectedPost} onClose={closePost} />
           )}
         </div>
       </div>
@@ -142,3 +137,4 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
