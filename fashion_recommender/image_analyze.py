@@ -154,7 +154,7 @@ def main():
     features = extract_features(image_paths, cache_file="cached_features_train.npy")
     index = build_faiss_index(features)
     
-    sample_post_id = dataset[0]['image_id']
+    sample_post_id = dataset[398]['image_id']
     print("\nRecommendations for post {} (train split):".format(sample_post_id))
     recommendations = get_recommendations_faiss(sample_post_id, dataset, features, index, top_n=5)
     
