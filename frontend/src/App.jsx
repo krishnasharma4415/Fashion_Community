@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom';
 import Home from "./pages/Home.jsx";
-import Updates from "./pages/Updates.jsx"; 
+import Updates from "./pages/Updates.jsx";
 import Profile from "./pages/ProfilePage.jsx";
 import Explore from "./pages/Explore.jsx";
 import PostCreation from "./pages/PostCreation.jsx";
@@ -24,8 +24,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/admin" element={<Admin />} />
-      <Route path="/editprofile" element={<EditProfile />} />
-      
+      <Route path="/edit-profile" element={<EditProfile />} />
     </Routes>
   );
 }
