@@ -1,19 +1,75 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   HeartIcon,
   ChatBubbleOvalLeftIcon
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import PostDetails from '../components/PostDetails';
+import PostDetails from './PostDetails';
 
 const PostCard = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(post.likeCount || 0);
   const [showOverlay, setShowOverlay] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
-  const handleLikeToggle = (e) => {
+  // Check if post is liked by user and get updated like count on component mount
+  useEffect(() => {
+    checkLikeStatus();
+  }, [post._id]);
+
+  const checkLikeStatus = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/likes/${post._id}`);
+      const data = await response.json();
+      setLikeCount(data.likes || post.likeCount || 0);
+      
+      // If using context or state management, you could check if post is in user's liked posts
+      // For now, we'll manage the liked state locally
+    } catch (error) {
+      console.error("Error checking like status:", error);
+    }
+  };
+
+  const handleLikeToggle = async (e) => {
     e.stopPropagation();
-    setIsLiked(!isLiked);
+    
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        alert("Please log in to like posts");
+        return;
+      }
+
+      if (isLiked) {
+        // Unlike post
+        const response = await fetch(`http://localhost:5000/api/likes/${post._id}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          setLikeCount(prev => Math.max(0, prev - 1));
+        }
+      } else {
+        // Like post
+        const response = await fetch(`http://localhost:5000/api/likes/${post._id}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (response.ok) {
+          setLikeCount(prev => prev + 1);
+        }
+      }
+      
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    }
   };
 
   const handleClick = () => {
@@ -72,11 +128,11 @@ const PostCard = ({ post }) => {
                   onClick={(e) => handleLikeToggle(e)}
                 />
               )}
-              <span>{isLiked ? post.likes + 1 : post.likes}</span>
+              <span>{likeCount}</span>
             </div>
             <div className="flex items-center space-x-1">
               <ChatBubbleOvalLeftIcon className="h-6 w-6" />
-              <span>{post.comments}</span>
+              <span>{post.commentCount || 0}</span>
             </div>
           </div>
         </div>
@@ -99,7 +155,10 @@ const PostCard = ({ post }) => {
       </div>
 
       {showDetails && (
-        <PostDetails post={post} onClose={() => setShowDetails(false)} />
+        <PostDetails 
+          post={post} 
+          onClose={() => setShowDetails(false)} 
+        />
       )}
     </>
   );
