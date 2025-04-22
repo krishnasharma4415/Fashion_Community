@@ -8,7 +8,7 @@ const Sidebar = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   const navItems = [
-    { icon: <FaHome />, label: "Home", path: "/" },
+    { icon: <FaHome />, label: "Home", path: "/home" },
     { icon: <FaCompass />, label: "Explore", path: "/Explore" },
     { icon: <FaPlusSquare />, label: "New Post", path: "/post-creation" },
     { icon: <FaBell />, label: "Updates", path: "/Updates" },
