@@ -4,12 +4,15 @@ import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import PostCard from "../components/PostCard";
 import Potrait from "../components/Portrait";
-// import SearchAndFilters from "../components/SearchAndFilters";
+import SearchAndFilters from "../components/SearchAndFilters";
 
 export default function ExplorePage() {
   const [squares, setSquares] = useState([]);
+  const [filteredSquares, setFilteredSquares] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState(null);
 
   // Fetch data from your API
   useEffect(() => {
@@ -20,10 +23,12 @@ export default function ExplorePage() {
 
         if (Array.isArray(response.data)) {
           setSquares(response.data);
+          setFilteredSquares(response.data);
         } else {
           console.error("Expected array but got:", typeof response.data);
-          console.log("Actual Response:",  response.data);
+          console.log("Actual Response:", response.data);
           setSquares([]);
+          setFilteredSquares([]);
         }
       } catch (err) {
         console.error("Error fetching posts:", err);
@@ -35,6 +40,44 @@ export default function ExplorePage() {
 
     fetchPosts();
   }, []);
+
+  // Effect to filter posts when search or filter changes
+  useEffect(() => {
+    if (!squares.length) return;
+
+    let results = [...squares];
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      results = results.filter(
+        post =>
+          (post.caption && post.caption.toLowerCase().includes(query)) ||
+          (post.username && post.username.toLowerCase().includes(query)) ||
+          (post.tags && post.tags.some(tag => tag.toLowerCase().includes(query)))
+      );
+    }
+
+    // Apply category filter
+    if (activeFilter) {
+      results = results.filter(
+        post =>
+          (post.category && post.category === activeFilter) ||
+          (post.tags && post.tags.includes(activeFilter))
+      );
+    }
+
+    setFilteredSquares(results);
+  }, [searchQuery, activeFilter, squares]);
+
+  // Handle search and filter changes
+  const handleSearch = (value) => {
+    setSearchQuery(value);
+  };
+
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter === activeFilter ? null : filter);
+  };
 
   if (loading) return <div className="text-center py-10">Loading posts...</div>;
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
@@ -48,63 +91,72 @@ export default function ExplorePage() {
         <main className="flex-1 overflow-y-auto">
           {/* Sticky Header */}
           <div className="sticky top-0 z-20 bg-[#f2ecf9] px-6 pt-4">
-            {/* <SearchAndFilters /> */}
+            <SearchAndFilters 
+              onSearch={handleSearch} 
+              onFilterChange={handleFilterChange}
+              activeFilter={activeFilter}
+              searchValue={searchQuery}
+            />
           </div>
 
           <div className="max-w-[1260px] mx-auto">
-            {Array.from({ length: Math.ceil(squares.length / 5) }).map((_, groupIdx) => {
-              const startIdx = groupIdx * 5;
-              const group = squares.slice(startIdx, startIdx + 5);
+            {filteredSquares.length === 0 && !loading ? (
+              <div className="text-center py-10 text-gray-500">
+                No posts found matching your search or filter criteria.
+              </div>
+            ) : (
+              Array.from({ length: Math.ceil(filteredSquares.length / 5) }).map((_, groupIdx) => {
+                const startIdx = groupIdx * 5;
+                const group = filteredSquares.slice(startIdx, startIdx + 5);
+                const isEven = groupIdx % 2 === 0;
+                const squaresPosts = group.slice(0, 4);
+                const portrait = group[4];
 
-              const isEven = groupIdx % 2 === 0;
-
-              const squaresPosts = group.slice(0, 4);
-              const portrait = group[4];
-
-              return (
-                <div key={groupIdx} className="flex gap-4 mb-4">
-                  {isEven ? (
-                    <>
-                      {/* Left - 4 squares */}
-                      <div className="grid grid-cols-2 gap-4">
-                        {squaresPosts.map((post, idx) => (
-                          <div key={post.id || idx}>
-                          <PostCard post={post} />  {/* Pass the entire post object as a prop named 'post' */}
+                return (
+                  <div key={groupIdx} className="flex gap-4 mb-4">
+                    {isEven ? (
+                      <>
+                        {/* Left - 4 squares */}
+                        <div className="grid grid-cols-2 gap-4">
+                          {squaresPosts.map((post, idx) => (
+                            <div key={post.id || idx}>
+                              <PostCard post={post} />
+                            </div>
+                          ))}
                         </div>
-                        ))}
-                      </div>
 
-                      {/* Right - portrait */}
-                      {portrait && (
-                        <div
-                          className="bg-[#cfc46a] rounded-md"
-                          style={{ width: '419px', height: '840px' }}
-                        />
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      {/* Left - portrait */}
-                      {portrait && (
-                        <div
-                          className="bg-[#cfc46a] rounded-md"
-                          style={{ width: '419px', height: '840px' }}
-                        />
-                      )}
+                        {/* Right - portrait */}
+                        {portrait && (
+                          <div
+                            className="bg-[#cfc46a] rounded-md"
+                            style={{ width: '419px', height: '840px' }}
+                          />
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {/* Left - portrait */}
+                        {portrait && (
+                          <div
+                            className="bg-[#cfc46a] rounded-md"
+                            style={{ width: '419px', height: '840px' }}
+                          />
+                        )}
 
-                      {/* Right - 4 squares */}
-                      <div className="grid grid-cols-2 gap-4">
-                        {squaresPosts.map((post, idx) => (
-                          <div key={post.id || idx}>
-                          <PostCard post={post} />  {/* Pass the entire post object as a prop named 'post' */}
+                        {/* Right - 4 squares */}
+                        <div className="grid grid-cols-2 gap-4">
+                          {squaresPosts.map((post, idx) => (
+                            <div key={post.id || idx}>
+                              <PostCard post={post} />
+                            </div>
+                          ))}
                         </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </div>
-              );
-            })}
+                      </>
+                    )}
+                  </div>
+                );
+              })
+            )}
           </div>
 
           {/* Footer */}

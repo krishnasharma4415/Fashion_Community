@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../Components/Navbar";
-import Sidebar from "../Components/Sidebar";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
 import "../styles/Profile.css";
 
 const ProfilePage = () => {
@@ -112,8 +112,8 @@ const ProfilePage = () => {
 export default ProfilePage;
 
 // import React, { useState } from "react";
-// import Navbar from "../Components/Navbar"; // adjust path as needed
-// import Sidebar from "../Components/Sidebar"; // adjust path as needed
+// import Navbar from "../components/Navbar"; // adjust path as needed
+// import Sidebar from "../components/Sidebar"; // adjust path as needed
 // import "../styles/Profile.css";
 
 // const ProfilePage = () => {

@@ -1,10 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 
-const SearchAndFilters = () => {
+const SearchAndFilters = ({ 
+  onSearch, 
+  onFilterChange, 
+  activeFilter,
+  searchValue = "",
+}) => {
   const filters = ["Summer", "Winter", "Formals", "Traditional"];
-  const [activeFilter, setActiveFilter] = useState(null);
-  const [searchValue, setSearchValue] = useState("");
+
+  const handleSearchChange = (e) => {
+    if (onSearch) {
+      onSearch(e.target.value);
+    }
+  };
+
+  const handleFilterClick = (filter) => {
+    if (onFilterChange) {
+      onFilterChange(filter);
+    }
+  };
+
+  const clearSearch = () => {
+    if (onSearch) {
+      onSearch("");
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4 p-4 w-full">
@@ -16,12 +37,12 @@ const SearchAndFilters = () => {
             type="text"
             placeholder="Search"
             value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
+            onChange={handleSearchChange}
             className="bg-transparent focus:outline-none w-full text-sm placeholder:text-gray-500"
           />
           {searchValue && (
             <button
-              onClick={() => setSearchValue("")}
+              onClick={clearSearch}
               className="text-gray-500 hover:text-black"
             >
               <X size={16} />
@@ -38,7 +59,7 @@ const SearchAndFilters = () => {
         {filters.map((filter) => (
           <span
             key={filter}
-            onClick={() => setActiveFilter(filter)}
+            onClick={() => handleFilterClick(filter)}
             className={`cursor-pointer rounded-full px-4 py-1 text-sm transition-colors duration-200 ${
               activeFilter === filter
                 ? "bg-black text-white"
