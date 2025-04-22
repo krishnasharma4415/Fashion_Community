@@ -1,9 +1,14 @@
 
 /* Auth Container */
 .auth-container {
-    min-height: 100vh;
-    background: white;
-  }
+  width: 100vw;
+  height: 100vh;
+  background: url(../assets/loginbg.png) no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
   
   /* Navbar */
   .auth-navbar {
@@ -26,7 +31,9 @@
     margin: 2rem auto;
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.5); /* less transparent */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(6px); /* optional: subtle glassy effect */
   }
   
   .auth-form input {
