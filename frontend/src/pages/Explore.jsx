@@ -91,8 +91,8 @@ export default function ExplorePage() {
         <main className="flex-1 overflow-y-auto">
           {/* Sticky Header */}
           <div className="sticky top-0 z-20 bg-[#f2ecf9] px-6 pt-4">
-            <SearchAndFilters 
-              onSearch={handleSearch} 
+            <SearchAndFilters
+              onSearch={handleSearch}
               onFilterChange={handleFilterChange}
               activeFilter={activeFilter}
               searchValue={searchQuery}
@@ -118,8 +118,8 @@ export default function ExplorePage() {
                       <>
                         {/* Left - 4 squares */}
                         <div className="grid grid-cols-2 gap-4">
-                          {squaresPosts.map((post, idx) => (
-                            <div key={post.id || idx}>
+                          {filteredSquares.map((post, idx) => (
+                            <div key={post._id || idx}>
                               <PostCard post={post} />
                             </div>
                           ))}

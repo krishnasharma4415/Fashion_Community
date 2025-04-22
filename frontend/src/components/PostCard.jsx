@@ -26,27 +26,28 @@ const PostCard = ({ post }) => {
         onClick={handleClick}
       >
         {/* Post Media (Image or Video) */}
-        {post.type === 'video' ? (
-          <video
-            src={post.mediaUrl}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            muted
-            loop
-            playsInline
-          />
-        ) : (
-          <img
-            src={post.imageUrl || post.mediaUrl}
-            alt={post.caption}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
+        {post.media && post.media.length > 0 && (
+          post.media[0].type === 'video' ? (
+            <video
+              src={post.media[0].url}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              muted
+              loop
+              playsInline
+            />
+          ) : (
+            <img
+              src={post.media[0].url}
+              alt={post.caption}
+              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          )
         )}
 
         {/* Hover Overlay */}
         <div
-          className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 ${
-            showOverlay ? 'opacity-100' : 'opacity-0'
-          }`}
+          className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 ${showOverlay ? 'opacity-100' : 'opacity-0'
+            }`}
         >
           <div className="flex space-x-6 text-white">
             <div className="flex items-center space-x-1">

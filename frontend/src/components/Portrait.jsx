@@ -7,6 +7,7 @@ const Portrait = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const hasMedia = post && post.media && post.media.length > 0;
 
   const handleLikeToggle = () => {
     setIsLiked(!isLiked);

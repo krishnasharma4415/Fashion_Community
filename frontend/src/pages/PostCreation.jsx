@@ -29,11 +29,11 @@ const NewPost = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
-  
+
   // Check authentication on component mount
   useEffect(() => {
     const token = localStorage.getItem("authToken");
-    
+
     if (!token) {
       console.log("No authentication token found");
       setErrorMessage("You must be logged in to create a post");
@@ -48,9 +48,9 @@ const NewPost = () => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
-    
+
     setSelectedFiles(files);
-    
+
     // Create object URLs for previews
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setPreviews(newPreviews);
@@ -66,7 +66,7 @@ const NewPost = () => {
   const removeImage = (index) => {
     setPreviews(prev => prev.filter((_, i) => i !== index));
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
-    
+
     // Reset the file input if all images are removed
     if (previews.length === 1 && fileInputRef.current) {
       fileInputRef.current.value = "";
@@ -85,24 +85,24 @@ const NewPost = () => {
 
     const formData = new FormData();
     selectedFiles.forEach((file) => {
-      formData.append("media", file);
+      formData.append("media", file); // This matches the multer field name
     });
     formData.append("caption", caption);
     if (tags.trim()) formData.append("tags", tags);
 
     try {
       const token = localStorage.getItem("authToken");
-      
+
       if (!token) {
         throw new Error("Authentication token not found. Please log in again.");
       }
-      
+
       console.log("Using token:", token);
-      
+
       const response = await axios.post("http://localhost:5000/api/posts", formData, {
         headers: {
           Authorization: `Bearer ${token}`
-          // Don't manually set Content-Type for FormData, axios will set it with correct boundary
+          // Content-Type will be set automatically with correct boundary for FormData
         },
       });
 
@@ -116,14 +116,17 @@ const NewPost = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
 
       setSuccessMessage("🎉 Post uploaded successfully!");
-      setTimeout(() => setSuccessMessage(""), 3000);
+      setTimeout(() => {
+        setSuccessMessage("");
+        navigate("/explore"); // Redirect to explore page after successful post
+      }, 2000);
     } catch (error) {
       console.error("❌ Error uploading post:", error);
-      
+
       if (error.response) {
         console.error("Response status:", error.response.status);
         console.error("Response data:", error.response.data);
-        
+
         if (error.response.status === 401) {
           setErrorMessage("Your session has expired. Please log in again.");
           setTimeout(() => navigate("/login"), 2000);
@@ -173,7 +176,7 @@ const NewPost = () => {
                         alt={`preview-${index}`}
                         className="w-full max-h-60 object-cover rounded-md"
                       />
-                      <button 
+                      <button
                         onClick={() => removeImage(index)}
                         className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
                         type="button"
@@ -182,8 +185,8 @@ const NewPost = () => {
                       </button>
                     </div>
                   ))}
-                  <button 
-                    onClick={() => fileInputRef.current?.click()} 
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
                     className="text-blue-500 text-sm mt-2"
                     type="button"
                   >
@@ -196,7 +199,7 @@ const NewPost = () => {
                   <span className="text-sm text-gray-400">Upload photo(s)</span>
                   <Input
                     type="file"
-                    accept="image/*,video/*"
+                    accept="image/*"
                     multiple
                     onChange={handleImageUpload}
                     ref={fileInputRef}
@@ -231,7 +234,7 @@ const NewPost = () => {
                   <Tag className="w-4 h-4" /> TAG PEOPLE
                 </p>
                 <Textarea
-                  placeholder="Add tags here to get featured"
+                  placeholder="Add tags here to get featured (separate with commas)"
                   value={tags}
                   onChange={(e) => setTags(e.target.value)}
                   className="h-24 resize-none mt-2 border-gray-300"
@@ -239,8 +242,8 @@ const NewPost = () => {
               </div>
 
               <div className="mt-auto flex justify-end">
-                <Button 
-                  onClick={handleSubmit} 
+                <Button
+                  onClick={handleSubmit}
                   disabled={isLoading}
                   className={`${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
                   type="button"
