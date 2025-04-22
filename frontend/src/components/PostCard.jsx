@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { HeartIcon, ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import PostDetails from './PostDetails'; // Assuming PostDetails is in the same directory
+import PostDetails from '../components/PostDetails'; // Assuming PostDetails is in the same directory
 
 const PostCard = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);

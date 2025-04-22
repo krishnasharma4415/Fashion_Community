@@ -1,7 +1,7 @@
-import Navbar from "../Components/Navbar";
-import Sidebar from "../Components/Sidebar";
-import PostCard from "../Components/PostCard";
-import Suggestions from "../Components/Suggestions";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import PostCard from "../components/PostCard";
+import Suggestions from "../components/Suggestions";
 import { useEffect, useState } from "react";
 import axios from "axios";
 

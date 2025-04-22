@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { HeartIcon, ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import PostDetails from './PostDetails'; // Assuming PostDetails is in the same directory
+import PostDetails from './PostDetails';
 
 const Portrait = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);

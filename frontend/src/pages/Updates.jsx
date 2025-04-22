@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-// import Navbar from "../Components/Navbar";
-import Sidebar from "../Components/Sidebar";
-import Suggestions from "../Components/Suggestions";
-import UpdateCard from "../Components/UpdateCard";
-
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import Suggestions from "../components/Suggestions";
+import UpdateCard from "../components/UpdateCard";
 
 const Updates = () => {
   const [activeTab, setActiveTab] = useState("followers");
