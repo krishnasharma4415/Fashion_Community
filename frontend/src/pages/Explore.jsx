@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../Components/Navbar";
-import Sidebar from "../Components/Sidebar";
-// import SearchAndFilters from "../Components/SearchAndFilters";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/Sidebar";
+import PostCard from "../components/PostCard";
+import Potrait from "../components/Portrait";
+// import SearchAndFilters from "../components/SearchAndFilters";
 
 export default function ExplorePage() {
   const [squares, setSquares] = useState([]);
@@ -20,7 +22,7 @@ export default function ExplorePage() {
           setSquares(response.data);
         } else {
           console.error("Expected array but got:", typeof response.data);
-          console.log("Actual Response:", response.data);
+          console.log("Actual Response:",  response.data);
           setSquares([]);
         }
       } catch (err) {
@@ -33,24 +35,6 @@ export default function ExplorePage() {
 
     fetchPosts();
   }, []);
-
-  const renderPostCard = (post, height = "419px") => (
-    <div
-      key={post._id}
-      className="rounded-md shadow-md overflow-hidden bg-[#cfc46a]"
-      style={{ width: "419px", height }}
-    >
-      <img
-        src={post.media?.[0]?.url}
-        alt={post.caption || "Fashion post"}
-        className="w-full h-4/5 object-cover"
-      />
-      <div className="p-2 h-1/5">
-      <p className="font-semibold truncate">{post.userId?.username || "Unknown"}</p>
-      <p className="text-sm text-gray-700 truncate">{post.caption || "No caption"}</p>
-      </div>
-    </div>
-  );
 
   if (loading) return <div className="text-center py-10">Loading posts...</div>;
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
@@ -83,7 +67,11 @@ export default function ExplorePage() {
                     <>
                       {/* Left - 4 squares */}
                       <div className="grid grid-cols-2 gap-4">
-                        {squaresPosts.map((post) => (renderPostCard(post)))}
+                        {squaresPosts.map((post, idx) => (
+                          <div key={post.id || idx}>
+                          <PostCard post={post} />  {/* Pass the entire post object as a prop named 'post' */}
+                        </div>
+                        ))}
                       </div>
 
                       {/* Right - portrait */}
@@ -106,7 +94,11 @@ export default function ExplorePage() {
 
                       {/* Right - 4 squares */}
                       <div className="grid grid-cols-2 gap-4">
-                        {squaresPosts.map((post) => (renderPostCard(post)))}
+                        {squaresPosts.map((post, idx) => (
+                          <div key={post.id || idx}>
+                          <PostCard post={post} />  {/* Pass the entire post object as a prop named 'post' */}
+                        </div>
+                        ))}
                       </div>
                     </>
                   )}
@@ -114,8 +106,6 @@ export default function ExplorePage() {
               );
             })}
           </div>
-
-
 
           {/* Footer */}
           <div className="mt-10 text-center text-sm text-gray-500">
@@ -125,6 +115,5 @@ export default function ExplorePage() {
         </main>
       </div>
     </div>
-
   );
 }

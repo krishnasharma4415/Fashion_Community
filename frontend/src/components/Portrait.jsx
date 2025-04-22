@@ -3,13 +3,12 @@ import { HeartIcon, ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
 import PostDetails from './PostDetails'; // Assuming PostDetails is in the same directory
 
-const PostCard = ({ post }) => {
+const Portrait = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
-  const handleLikeToggle = (e) => {
-    e.stopPropagation(); // Prevent click from bubbling to the card
+  const handleLikeToggle = () => {
     setIsLiked(!isLiked);
   };
 
@@ -20,27 +19,19 @@ const PostCard = ({ post }) => {
   return (
     <>
       <div
-        className="relative w-[419px] h-[419px] overflow-hidden rounded-lg bg-gray-100 group cursor-pointer"
+        className="relative w-[419px] h-[840px] overflow-hidden rounded-lg bg-gray-100 group cursor-pointer"
         onMouseEnter={() => setShowOverlay(true)}
         onMouseLeave={() => setShowOverlay(false)}
         onClick={handleClick}
       >
-        {/* Post Media (Image or Video) */}
-        {post.type === 'video' ? (
-          <video
-            src={post.mediaUrl}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-            muted
-            loop
-            playsInline
-          />
-        ) : (
-          <img
-            src={post.imageUrl || post.mediaUrl}
-            alt={post.caption}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          />
-        )}
+        {/* Video Content (Only videos allowed) */}
+        <video
+          src={post.mediaUrl}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          muted
+          loop
+          playsInline
+        />
 
         {/* Hover Overlay */}
         <div
@@ -51,9 +42,9 @@ const PostCard = ({ post }) => {
           <div className="flex space-x-6 text-white">
             <div className="flex items-center space-x-1">
               {isLiked ? (
-                <HeartIconSolid className="h-6 w-6 text-red-500" onClick={(e) => handleLikeToggle(e)} />
+                <HeartIconSolid className="h-6 w-6 text-red-500" onClick={handleLikeToggle} />
               ) : (
-                <HeartIcon className="h-6 w-6" onClick={(e) => handleLikeToggle(e)} />
+                <HeartIcon className="h-6 w-6" onClick={handleLikeToggle} />
               )}
               <span>{isLiked ? post.likes + 1 : post.likes}</span>
             </div>
@@ -80,4 +71,4 @@ const PostCard = ({ post }) => {
   );
 };
 
-export default PostCard;
+export default Portrait;
