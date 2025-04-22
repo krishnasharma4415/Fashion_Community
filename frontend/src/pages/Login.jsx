@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import '../Styles/Auth.css';
 
 const LoginPage = () => {
-  const { login } = useContext(AuthContext); // Get login function from context
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -34,16 +34,20 @@ const LoginPage = () => {
       const data = await res.json();
 
       if (res.ok) {
-        console.log('Login successful, token:', data.token);
-        localStorage.setItem('authToken', data.token); // Optional but good for persistence
-        login(data.token); // Call context login with token
+        console.log('✅ Login successful:', data);
+        
+        // Store token and user info in localStorage
+        localStorage.setItem('authToken', data.token);
+        localStorage.setItem('user', JSON.stringify({ ...data.user, _id: data.user.id })); // 👈 Add this
+        login(data.token);
         navigate('/Home', { replace: true });
+        
       } else {
         setError(data.message || 'Login failed!');
-        console.error('Login response:', data);
+        console.error('Login failed:', data);
       }
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('❌ Login error:', err);
       setError('Something went wrong. Please try again.');
     } finally {
       setIsLoading(false);

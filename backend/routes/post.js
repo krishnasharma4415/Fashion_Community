@@ -63,6 +63,19 @@ router.delete('/:id', auth, async (req, res) => {
     }
 });
 
+router.get('/user/:userId', async (req, res) => {
+    try {
+        const userPosts = await Post.find({ userId: req.params.userId })
+            .sort({ createdAt: -1 }) // optional: newest first
+            .populate('userId', 'username profilePicture');
+        
+        res.json(userPosts);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
 router.post('/upload', auth, upload.single('media'), (req, res) => {
     if (!req.file) return res.status(400).json({ message: 'File upload failed' });
 

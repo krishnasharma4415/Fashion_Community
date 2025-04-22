@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import { HeartIcon, ChatBubbleOvalLeftIcon } from '@heroicons/react/24/outline';
+import {
+  HeartIcon,
+  ChatBubbleOvalLeftIcon
+} from '@heroicons/react/24/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/24/solid';
-import PostDetails from '../components/PostDetails'; // Assuming PostDetails is in the same directory
+import PostDetails from '../components/PostDetails';
 
 const PostCard = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -9,12 +12,18 @@ const PostCard = ({ post }) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const handleLikeToggle = (e) => {
-    e.stopPropagation(); // Prevent click from bubbling to the card
+    e.stopPropagation();
     setIsLiked(!isLiked);
   };
 
   const handleClick = () => {
     setShowDetails(true);
+  };
+
+  const getMediaUrl = (mediaUrl) => {
+    return mediaUrl?.startsWith('http')
+      ? mediaUrl
+      : `http://localhost:5000${mediaUrl}`;
   };
 
   return (
@@ -25,11 +34,11 @@ const PostCard = ({ post }) => {
         onMouseLeave={() => setShowOverlay(false)}
         onClick={handleClick}
       >
-        {/* Post Media (Image or Video) */}
+        {/* Post Media */}
         {post.media && post.media.length > 0 && (
           post.media[0].type === 'video' ? (
             <video
-              src={post.media[0].url}
+              src={getMediaUrl(post.media[0].url)}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
               muted
               loop
@@ -37,7 +46,7 @@ const PostCard = ({ post }) => {
             />
           ) : (
             <img
-              src={post.media[0].url}
+              src={getMediaUrl(post.media[0].url)}
               alt={post.caption}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />
@@ -46,15 +55,22 @@ const PostCard = ({ post }) => {
 
         {/* Hover Overlay */}
         <div
-          className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 ${showOverlay ? 'opacity-100' : 'opacity-0'
-            }`}
+          className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 ${
+            showOverlay ? 'opacity-100' : 'opacity-0'
+          }`}
         >
           <div className="flex space-x-6 text-white">
             <div className="flex items-center space-x-1">
               {isLiked ? (
-                <HeartIconSolid className="h-6 w-6 text-red-500" onClick={(e) => handleLikeToggle(e)} />
+                <HeartIconSolid
+                  className="h-6 w-6 text-red-500"
+                  onClick={(e) => handleLikeToggle(e)}
+                />
               ) : (
-                <HeartIcon className="h-6 w-6" onClick={(e) => handleLikeToggle(e)} />
+                <HeartIcon
+                  className="h-6 w-6"
+                  onClick={(e) => handleLikeToggle(e)}
+                />
               )}
               <span>{isLiked ? post.likes + 1 : post.likes}</span>
             </div>
@@ -68,15 +84,23 @@ const PostCard = ({ post }) => {
         {/* User Info */}
         <div className="absolute top-0 left-0 p-2 flex items-center space-x-2">
           <img
-            src={post.userAvatar}
-            alt={post.username}
+            src={
+              post.userId?.profilePicture
+                ? getMediaUrl(post.userId.profilePicture)
+                : 'https://via.placeholder.com/40'
+            }
+            alt={post.userId?.username || 'User'}
             className="w-8 h-8 rounded-full object-cover border-2 border-white"
           />
-          <span className="text-white text-sm font-semibold drop-shadow">{post.username}</span>
+          <span className="text-white text-sm font-semibold drop-shadow">
+            {post.userId?.username || 'Unknown'}
+          </span>
         </div>
       </div>
 
-      {showDetails && <PostDetails post={post} onClose={() => setShowDetails(false)} />}
+      {showDetails && (
+        <PostDetails post={post} onClose={() => setShowDetails(false)} />
+      )}
     </>
   );
 };

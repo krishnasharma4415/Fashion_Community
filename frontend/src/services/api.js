@@ -59,7 +59,7 @@ export const createPost = (formData) => {
     fetch(`${API_BASE}/posts/${postId}`).then(res => res.json());
 
   export const getPostsByUserId = (userId) =>
-    fetch(`${API_BASE}/users/${userId}/posts`, authHeader()).then((res) => res.json());
+    fetch(`${API_BASE}/posts/user/${userId}`).then((res) => res.json());
   
   // 🗑️ Delete a post
   export const deletePost = (postId) =>
