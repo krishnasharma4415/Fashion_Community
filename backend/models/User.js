@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     profilePicture: { type: String, default: '' },
     bio: { type: String, default: '' },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    savedPosts: [{type: mongoose.Schema.Types.ObjectId, ref: "Post"}],
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);

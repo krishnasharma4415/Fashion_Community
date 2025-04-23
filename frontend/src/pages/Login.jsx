@@ -23,7 +23,7 @@ const LoginPage = () => {
     }
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +38,16 @@ const LoginPage = () => {
         
         // Store token and user info in localStorage
         localStorage.setItem('authToken', data.token);
-        localStorage.setItem('user', JSON.stringify({ ...data.user, _id: data.user.id })); // 👈 Add this
+        
+        // Ensure user object has _id
+        const userData = {
+          ...data.user,
+          _id: data.user._id || data.user.id // Handle both formats
+        };
+        
+        console.log('Saving user data to localStorage:', userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+        
         login(data.token);
         navigate('/Home', { replace: true });
         

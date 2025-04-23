@@ -2,6 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const auth = require("../middleware/auth");
 require("dotenv").config();
 
 const router = express.Router();
@@ -9,7 +10,7 @@ const router = express.Router();
 router.post("/register", async (req, res) => {
     try {
         const { username, email, password } = req.body;
-        
+
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(400).json({ success: false, message: "Email already in use" });
@@ -34,11 +35,37 @@ router.post("/login", async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(401).json({ success: false, message: "Invalid credentials" });
 
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
-        res.json({ success: true, token, user: { id: user._id, username: user.username, email: user.email, role: user.role } });
+        res.json({
+            success: true,
+            token,
+            user: {
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                profilePicture: user.profilePicture,
+                bio: user.bio
+            }
+        });
     } catch (err) {
+        console.error("Login error:", err);
         res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// Endpoint to check if token is valid
+router.get("/check-token", auth, (req, res) => {
+    try {
+        // If it reaches here, the token is valid (auth middleware passed)
+        res.json({
+            valid: true,
+            user: { id: req.user.id }
+        });
+    } catch (err) {
+        console.error("Token check error:", err);
+        res.status(401).json({ valid: false, message: "Invalid token" });
     }
 });
 
