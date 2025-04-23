@@ -1,7 +1,5 @@
-// backend/controllers/userRecommendationController.js
 const userRecommendation = require('../ml/userRecommendation');
 
-// Get people you may know recommendations
 exports.getPeopleYouMayKnow = async (req, res) => {
   try {
     const userId = req.user.id;

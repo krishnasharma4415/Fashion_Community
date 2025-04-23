@@ -1,16 +1,13 @@
-// backend/controllers/postController.js
 const Post = require('../models/Post');
 const User = require('../models/User');
 const contentFilter = require('../ml/contentFilter');
 const InteractionService = require('../services/interactionService');
 
-// Create a new post with fashion content validation
 exports.createPost = async (req, res) => {
   try {
     const { caption, media, tags, location } = req.body;
     const userId = req.user.id;
     
-    // Validate fashion content
     const contentValidation = await contentFilter.isFashionRelated(caption, tags);
     
     if (!contentValidation.isFashionRelated) {
@@ -20,7 +17,6 @@ exports.createPost = async (req, res) => {
       });
     }
     
-    // Create the post
     const newPost = new Post({
       user: userId,
       caption,
@@ -34,7 +30,6 @@ exports.createPost = async (req, res) => {
     
     await newPost.save();
     
-    // Update user post count
     await User.findByIdAndUpdate(userId, {
       $inc: { postsCount: 1 }
     });
@@ -52,7 +47,6 @@ exports.createPost = async (req, res) => {
   }
 };
 
-// Get a post
 exports.getPost = async (req, res) => {
   try {
     const post = await Post.findById(req.params.id)
@@ -66,7 +60,6 @@ exports.getPost = async (req, res) => {
       });
     }
     
-    // Track view interaction if user is logged in
     if (req.user) {
       await InteractionService.trackInteraction(req.user.id, post._id, 'view');
     }
@@ -83,5 +76,3 @@ exports.getPost = async (req, res) => {
     });
   }
 };
-
-// Other controller methods...

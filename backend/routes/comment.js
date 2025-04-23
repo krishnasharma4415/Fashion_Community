@@ -21,7 +21,6 @@ router.post("/:postId", auth, async (req, res) => {
     await newComment.save();
     await Post.findByIdAndUpdate(req.params.postId, { $inc: { commentCount: 1 } });
 
-    // Activity
     await UserActivity.create({
       userId: req.user.id,
       postId: req.params.postId,

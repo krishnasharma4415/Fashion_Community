@@ -86,7 +86,6 @@ router.post('/upload', auth, upload.single('media'), (req, res) => {
     });
 });
 
-// Save or unsave post
 router.post('/save/:postId', auth, async (req, res) => {
     const userId = req.user.id;
     const { postId } = req.params;
@@ -96,9 +95,9 @@ router.post('/save/:postId', auth, async (req, res) => {
       const index = user.savedPosts.indexOf(postId);
   
       if (index > -1) {
-        user.savedPosts.splice(index, 1); // unsave
+        user.savedPosts.splice(index, 1);
       } else {
-        user.savedPosts.push(postId); // save
+        user.savedPosts.push(postId);
       }
   
       await user.save();

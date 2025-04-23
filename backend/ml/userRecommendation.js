@@ -1,11 +1,9 @@
-// backend/ml/userRecommendation.js
 const User = require('../models/User');
 const Relationship = require('../models/Relationship');
 const Post = require('../models/Post');
 const Interaction = require('../models/Interaction');
 const UserInterest = require('../models/UserInterest');
 
-// Configuration constants
 const RECOMMENDATION_WEIGHTS = {
   MUTUAL_CONNECTIONS: 0.4,
   SIMILAR_INTERESTS: 0.3,
@@ -14,28 +12,25 @@ const RECOMMENDATION_WEIGHTS = {
 const INTERACTION_DAYS = 30;
 
 /**
- * Generates personalized "People You May Know" recommendations
- * @param {String} userId - The user ID to generate recommendations for
- * @param {Number} limit - Maximum number of recommendations (default: 20)
- * @returns {Promise<Array>} - Array of recommended users with metadata
+ * To Generate personalized "People You May Know" recommendations
+ * @param {String} userId 
+ * @param {Number} limit 
+ * @returns {Promise<Array>}
  */
 exports.getPeopleYouMayKnow = async function(userId, limit = 20) {
   try {
-    // Get essential user data in parallel
     const [followingIds, userInteractions, userInterestData] = await Promise.all([
       getFollowingIds(userId),
       getUserInteractions(userId),
       UserInterest.findOne({ user: userId }).lean()
     ]);
 
-    // Get recommendation sources
     const [mutualConnections, similarInterestUsers, interactedWithUserIds] = await Promise.all([
       findMutualConnections(userId, followingIds),
       findSimilarInterestUsers(userId, followingIds, userInterestData, userInteractions),
       extractInteractedUserIds(userInteractions)
     ]);
 
-    // Generate combined recommendations
     const recommendations = generateRecommendations(
       mutualConnections,
       similarInterestUsers,
@@ -45,7 +40,6 @@ exports.getPeopleYouMayKnow = async function(userId, limit = 20) {
       limit
     );
 
-    // Get full user data for top recommendations
     return await getFullUserData(recommendations, limit);
 
   } catch (error) {
@@ -54,7 +48,6 @@ exports.getPeopleYouMayKnow = async function(userId, limit = 20) {
   }
 };
 
-// Helper functions
 
 async function getFollowingIds(userId) {
   const relationships = await Relationship.find({

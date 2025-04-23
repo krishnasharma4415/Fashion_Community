@@ -55,10 +55,8 @@ router.post("/login", async (req, res) => {
     }
 });
 
-// Endpoint to check if token is valid
 router.get("/check-token", auth, (req, res) => {
     try {
-        // If it reaches here, the token is valid (auth middleware passed)
         res.json({
             valid: true,
             user: { id: req.user.id }

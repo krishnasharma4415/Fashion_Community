@@ -6,11 +6,9 @@ import torchvision.transforms as transforms
 from torchvision import models
 from pathlib import Path
 
-# Initialize ResNet50 model
-model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)  # Updated to use 'weights' instead of 'pretrained'
+model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
 model.eval()
 
-# Define image preprocessing transforms
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -18,7 +16,7 @@ transform = transforms.Compose([
 ])
 
 def preprocess_dataset(data_path, split='train', limit=400):
-    image_dir = Path(data_path) / "image"  # Directly point to the 'image' folder
+    image_dir = Path(data_path) / "image"
     if not image_dir.exists():
         raise FileNotFoundError("Image directory not found: {}".format(image_dir))
 

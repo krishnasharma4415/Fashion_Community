@@ -10,16 +10,13 @@ from pymongo import MongoClient
 import faiss
 from sklearn.preprocessing import normalize
 
-# Initialize MongoDB connection
 client = MongoClient('mongodb://localhost:27017/')
 db = client['fashiondb']
 posts_collection = db['posts']
 
-# Initialize ResNet50 model
 model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
 model.eval()
 
-# Image preprocessing transforms
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -27,9 +24,8 @@ transform = transforms.Compose([
 ])
 
 def load_image_from_url(url):
-    """Load image from URL and preprocess it"""
     try:
-        response = requests.get(f"http://localhost:3000{url}")  # Adjust base URL as needed
+        response = requests.get(f"http://localhost:3000{url}")
         img = Image.open(BytesIO(response.content)).convert('RGB')
         return transform(img).unsqueeze(0)
     except Exception as e:
@@ -37,7 +33,6 @@ def load_image_from_url(url):
         return None
 
 def extract_features_from_url(image_url):
-    """Extract features from an image URL"""
     img_tensor = load_image_from_url(image_url)
     if img_tensor is not None:
         with torch.no_grad():
@@ -45,7 +40,6 @@ def extract_features_from_url(image_url):
     return np.zeros((2048,))
 
 def get_all_posts_features():
-    """Fetch all posts and extract their image features"""
     posts = list(posts_collection.find({"media.type": "image"}))
     features = []
     valid_posts = []
@@ -60,7 +54,6 @@ def get_all_posts_features():
     return np.array(features), valid_posts
 
 def build_faiss_index(features):
-    """Build FAISS index from features"""
     features = normalize(features)
     dim = features.shape[1]
     index = faiss.IndexFlatIP(dim)
@@ -69,10 +62,8 @@ def build_faiss_index(features):
 
 def get_similar_posts(post_id, top_n=5):
     """Get similar posts for a given post ID"""
-    # Get all posts and features
     features, posts = get_all_posts_features()
     
-    # Find the index of the query post
     query_idx = None
     for idx, post in enumerate(posts):
         if str(post['_id']) == post_id or str(post['postId']) == post_id:
@@ -82,12 +73,10 @@ def get_similar_posts(post_id, top_n=5):
     if query_idx is None:
         return []
     
-    # Build index and search
     index = build_faiss_index(features)
     query_vector = normalize(features[query_idx].reshape(1, -1))
     _, indices = index.search(query_vector, top_n + 1)
     
-    # Prepare results
     results = []
     for i in indices[0]:
         if i == query_idx:

@@ -1,4 +1,3 @@
-// models/UserFeed.js
 const mongoose = require('mongoose');
 
 const UserFeedSchema = new mongoose.Schema({
@@ -20,14 +19,12 @@ const UserFeedSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  // For performance optimization
   feedVersion: {
     type: Number,
     default: 1
   }
 }, { timestamps: true });
 
-// Compound index for fast queries
 UserFeedSchema.index({ user: 1, lastUpdated: -1 });
 
 module.exports = mongoose.model('UserFeed', UserFeedSchema);

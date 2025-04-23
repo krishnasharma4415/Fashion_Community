@@ -1,4 +1,3 @@
-// backend/controllers/reportController.js
 const Report = require('../models/Report');
 
 exports.reportPost = async (req, res) => {

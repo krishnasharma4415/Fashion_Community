@@ -83,7 +83,6 @@ function isToxicRuleBased(text) {
   };
 }
 
-// ML-based toxicity detection
 async function isToxicML(text) {
   try {
     if (!text || text.trim().length < 1) {
@@ -92,7 +91,6 @@ async function isToxicML(text) {
     
     const predictions = await toxicityModel.classify(text);
     
-    // Check if any category exceeds threshold
     const toxicCategories = predictions
       .filter(prediction => prediction.results[0].match)
       .map(prediction => ({
@@ -108,23 +106,18 @@ async function isToxicML(text) {
     };
   } catch (error) {
     console.error('Error with toxicity model prediction:', error);
-    // Fallback to rule-based approach
     return isToxicRuleBased(text);
   }
 }
 
-// Main function to check comment toxicity
 exports.isToxicComment = async function(text) {
-  // First try to use ML model
   const modelLoaded = await loadToxicityModel();
   
   if (modelLoaded && toxicityModel) {
     return await isToxicML(text);
   } else {
-    // Fallback to rule-based approach
     return isToxicRuleBased(text);
   }
 };
 
-// Export for testing
 exports.testRuleBased = isToxicRuleBased;

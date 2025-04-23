@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).select("-password"); // Exclude password
+    const user = await User.findById(req.params.id).select("-password");
     if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
@@ -42,7 +42,6 @@ router.delete("/:id", auth, async (req, res) => {
   }
 });
 
-// PUT /api/users/profile
 router.put('/profile', auth, upload.single('profilePicture'), async (req, res) => {
   try {
     console.log("Profile update request received:", {
@@ -58,15 +57,12 @@ router.put('/profile', auth, upload.single('profilePicture'), async (req, res) =
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update user fields if provided
     if (req.body.username) user.username = req.body.username;
     if (req.body.bio !== undefined) user.bio = req.body.bio;
 
-    // Handle profile picture upload
     if (req.file) {
-      // Calculate relative path from upload directory
       const relativePath = path.join('/uploads/profiles', path.basename(req.file.path));
-      user.profilePicture = relativePath.replace(/\\/g, '/'); // Convert backslashes to forward slashes
+      user.profilePicture = relativePath.replace(/\\/g, '/');
       console.log("Updated profile picture path:", user.profilePicture);
     }
 

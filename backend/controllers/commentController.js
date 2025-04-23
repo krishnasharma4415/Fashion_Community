@@ -1,17 +1,14 @@
-// backend/controllers/commentController.js
 const Comment = require('../models/Comment');
 const Post = require('../models/Post');
 const commentFilter = require('../ml/commentFilter');
 const InteractionService = require('../services/interactionService');
 
-// Create a comment with toxicity check
 exports.createComment = async (req, res) => {
   try {
     const { text } = req.body;
     const postId = req.params.postId;
     const userId = req.user.id;
     
-    // Check if comment contains toxic content
     const toxicityCheck = await commentFilter.isToxicComment(text);
     
     if (toxicityCheck.isToxic) {
@@ -21,7 +18,6 @@ exports.createComment = async (req, res) => {
       });
     }
     
-    // Create comment
     const newComment = new Comment({
       user: userId,
       post: postId,
@@ -30,15 +26,12 @@ exports.createComment = async (req, res) => {
     
     await newComment.save();
     
-    // Update post comment count
     await Post.findByIdAndUpdate(postId, {
       $inc: { commentsCount: 1 }
     });
     
-    // Track comment interaction
     await InteractionService.trackInteraction(userId, postId, 'comment');
     
-    // Populate user data
     await newComment.populate('user', 'username profilePicture');
     
     res.status(201).json({
@@ -53,5 +46,3 @@ exports.createComment = async (req, res) => {
     });
   }
 };
-
-// Other comment controller methods...

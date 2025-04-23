@@ -6,19 +6,15 @@ import asyncio
 app = Flask(__name__)
 service = RecommendationService()
 
-# Health check route to verify the server is running
 @app.route('/')
 def home():
     return 'Recommendation API is running!'
 
-# Route to get recommendations by user_id
 @app.route('/api/recommendations/<user_id>')
 def get_recommendations(user_id):
     try:
-        # Validate ObjectId format
         user_object_id = ObjectId(user_id)
         
-        # Use asyncio.run to run async function inside Flask route
         recs = asyncio.run(service.generate_recommendations(user_object_id))
         
         return jsonify(recs)

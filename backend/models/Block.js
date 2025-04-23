@@ -1,4 +1,3 @@
-// models/Block.js
 const mongoose = require('mongoose');
 
 const BlockSchema = new mongoose.Schema({
@@ -20,9 +19,7 @@ const BlockSchema = new mongoose.Schema({
   notes: String
 }, { timestamps: true });
 
-// Compound index to ensure uniqueness and fast queries
 BlockSchema.index({ blocker: 1, blocked: 1 }, { unique: true });
-// Index for checking if a user is blocked
 BlockSchema.index({ blocked: 1 });
 
 module.exports = mongoose.model('Block', BlockSchema);

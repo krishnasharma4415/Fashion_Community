@@ -10,11 +10,9 @@ import torchvision.transforms as transforms
 from torchvision import models
 from sklearn.preprocessing import normalize
 
-# Initialize ResNet50 model in PyTorch
 model = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
 model.eval()
 
-# Define image preprocessing transforms
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
@@ -22,16 +20,13 @@ transform = transforms.Compose([
 ])
 
 def check_dataset_paths(data_path, csv_path, image_dir):
-    """Check if required dataset paths exist."""
     if not csv_path.exists() or not image_dir.exists():
         raise FileNotFoundError("Missing CSV or image directory at {}".format(data_path))
 
 def load_metadata(csv_path):
-    """Load metadata from the CSV file."""
     return pd.read_csv(csv_path)
 
 def process_item(row, image_dir, annos_dir, count, limit):
-    """Process a single row to create metadata if conditions are met."""
     image_id = Path(row['path']).stem if 'path' in row else str(count)
     img_path = image_dir / f"{image_id}.jpg"
     anno_path = annos_dir / f"{image_id}.json"
@@ -56,15 +51,7 @@ def process_item(row, image_dir, annos_dir, count, limit):
     return None
 
 def load_dataset(data_path, split='train', limit=400):
-    """
-    Load dataset using CSV and JSON files.
-    Args:
-        data_path (str): Path to dataset folder.
-        split (str): Dataset split ('train', 'validation', or 'test').
-        limit (int): Number of images to process.
-    Returns:
-        list: List of dictionaries with image metadata.
-    """
+  
     data_path = Path(data_path)
     csv_path = data_path / "train.csv"
     image_dir = data_path / "image"

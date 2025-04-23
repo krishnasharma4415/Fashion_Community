@@ -1,4 +1,3 @@
-// models/Trending.js
 const mongoose = require('mongoose');
 
 const TrendingSchema = new mongoose.Schema({
@@ -26,7 +25,7 @@ const TrendingSchema = new mongoose.Schema({
       default: 0
     },
     velocity: {
-      type: Number, // rate of engagement increase
+      type: Number,
       default: 0
     }
   }],
@@ -45,7 +44,6 @@ const TrendingSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-// Create compound indexes for quick lookups
 TrendingSchema.index({ scope: 1, region: 1, updatedAt: -1 });
 TrendingSchema.index({ scope: 1, category: 1, updatedAt: -1 });
 

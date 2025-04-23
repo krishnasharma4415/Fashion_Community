@@ -32,10 +32,9 @@ const ActivitySchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  groupKey: String // For grouping similar activities
+  groupKey: String 
 }, { timestamps: true });
 
-// Indexes for quick access
 ActivitySchema.index({ recipient: 1, createdAt: -1 });
 ActivitySchema.index({ actor: 1, actionType: 1, createdAt: -1 });
 ActivitySchema.index({ recipient: 1, seen: 1 });

@@ -1,29 +1,22 @@
 from pathlib import Path
 
 def load_images_from_folder(image_folder_path, limit=400):
-    """
-    Load images from a folder.
-    Args:
-        image_folder_path (str): Path to the image folder.
-        limit (int): Maximum number of images to load.
-    Returns:
-        list: List of dictionaries with basic image metadata.
-    """
+    
     image_folder = Path(image_folder_path)
-    print(f"Checking path: {image_folder}")  # Debug print
+    print(f"Checking path: {image_folder}")
     if not image_folder.exists():
         raise FileNotFoundError(f"Image folder not found: {image_folder}")
-    print("Path exists, listing files...")  # Debug print
+    print("Path exists, listing files...")
 
     image_paths = [img_path for img_path in image_folder.glob('*.jpg')]
-    print(f"Found {len(image_paths)} .jpg files")  # Debug print
+    print(f"Found {len(image_paths)} .jpg files")
     dataset = []
     for count, img_path in enumerate(image_paths):
         if count >= limit:
             break
         image_id = img_path.stem
         dataset.append({
-            'image_path': str(img_path),  # Convert to string for storage if needed
+            'image_path': str(img_path),
             'image_id': image_id,
             'category': 'unknown',
             'style': 'unknown',
@@ -37,4 +30,4 @@ def load_images_from_folder(image_folder_path, limit=400):
 if __name__ == "__main__":
     data_path = "D:/Fashion_Community/fashion_recommender/path_to_image_folder/image"
     dataset = load_images_from_folder(data_path)
-    print(f"Final dataset size: {len(dataset)}")  # Debug print
+    print(f"Final dataset size: {len(dataset)}")

@@ -6,14 +6,12 @@ const UserActivity = require("../models/UserActivity");
 
 const router = express.Router();
 
-// Follow a user
 router.post("/:userId", auth, async (req, res) => {
   try {
     if (req.user.id === req.params.userId) {
       return res.status(400).json({ message: "You cannot follow yourself" });
     }
 
-    // Check if target user exists
     const targetUser = await User.findById(req.params.userId);
     if (!targetUser) return res.status(404).json({ message: "User not found" });
 
@@ -45,7 +43,6 @@ router.post("/:userId", auth, async (req, res) => {
   }
 });
 
-// Unfollow a user
 router.delete("/:userId", auth, async (req, res) => {
   try {
     const follow = await Follow.findOneAndDelete({ 
@@ -70,7 +67,6 @@ router.delete("/:userId", auth, async (req, res) => {
   }
 });
 
-// Get follower count
 router.get("/:userId/followers/count", async (req, res) => {
   try {
     const count = await Follow.countDocuments({ following: req.params.userId });
@@ -81,7 +77,6 @@ router.get("/:userId/followers/count", async (req, res) => {
   }
 });
 
-// Get following count
 router.get("/:userId/following/count", async (req, res) => {
   try {
     const count = await Follow.countDocuments({ follower: req.params.userId });
@@ -92,7 +87,6 @@ router.get("/:userId/following/count", async (req, res) => {
   }
 });
 
-// Check if current user is following target user
 router.get("/:userId/status", auth, async (req, res) => {
   try {
     const follow = await Follow.findOne({ 
@@ -107,7 +101,6 @@ router.get("/:userId/status", auth, async (req, res) => {
   }
 });
 
-// Get followers list
 router.get("/:userId/followers", async (req, res) => {
   try {
     const followers = await Follow.find({ following: req.params.userId })
@@ -121,7 +114,6 @@ router.get("/:userId/followers", async (req, res) => {
   }
 });
 
-// Get following list
 router.get("/:userId/following", async (req, res) => {
   try {
     const following = await Follow.find({ follower: req.params.userId })

@@ -1,4 +1,3 @@
-// models/UserInterest.js
 const mongoose = require('mongoose');
 
 const UserInterestSchema = new mongoose.Schema({
@@ -12,7 +11,7 @@ const UserInterestSchema = new mongoose.Schema({
     category: String,
     weight: {
       type: Number,
-      default: 1.0, // 0-5 scale, higher means stronger interest
+      default: 1.0,
       min: 0,
       max: 5
     },
@@ -27,8 +26,8 @@ const UserInterestSchema = new mongoose.Schema({
     }
   }],
   contentEngagement: {
-    averageViewDuration: Number, // in seconds
-    peakEngagementHours: [Number], // 0-23 representing hours of the day
+    averageViewDuration: Number,
+    peakEngagementHours: [Number],
     engagementScore: {
       type: Number,
       default: 0

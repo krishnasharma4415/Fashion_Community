@@ -1,10 +1,8 @@
-// backend/controllers/userController.js
 const User = require('../models/User');
 const authService = require('../services/authService');
 const { successResponse, errorResponse } = require('../utils/responseFormatter');
 const asyncHandler = require('express-async-handler');
 
-// Register a new user
 exports.register = asyncHandler(async (req, res) => {
   try {
     const userData = await authService.registerUser(req.body);
@@ -15,7 +13,6 @@ exports.register = asyncHandler(async (req, res) => {
   }
 });
 
-// Login user
 exports.login = asyncHandler(async (req, res) => {
   try {
     const { login, password } = req.body;
@@ -33,7 +30,6 @@ exports.login = asyncHandler(async (req, res) => {
   }
 });
 
-// Get current user profile
 exports.getCurrentUser = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -50,7 +46,6 @@ exports.getCurrentUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Get user profile by username
 exports.getUserProfile = asyncHandler(async (req, res) => {
   try {
     const { username } = req.params;
@@ -71,7 +66,6 @@ exports.getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// Update user profile
 exports.updateProfile = asyncHandler(async (req, res) => {
   try {
     const { name, bio, website } = req.body;
@@ -96,13 +90,11 @@ exports.updateProfile = asyncHandler(async (req, res) => {
   }
 });
 
-// Follow a user
 exports.followUser = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
     
-    // Check if user exists
     const userToFollow = await User.findById(id);
     
     if (!userToFollow) {
@@ -110,7 +102,6 @@ exports.followUser = asyncHandler(async (req, res) => {
       throw new Error('User not found');
     }
     
-    // Check if already following
     const alreadyFollowing = await Relationship.findOne({
       follower: userId,
       following: id
@@ -121,13 +112,11 @@ exports.followUser = asyncHandler(async (req, res) => {
       throw new Error('Already following this user');
     }
     
-    // Create follow relationship
     await Relationship.create({
       follower: userId,
       following: id
     });
     
-    // Update follower/following counts
     await User.findByIdAndUpdate(userId, {
       $inc: { followingCount: 1 }
     });
@@ -143,13 +132,11 @@ exports.followUser = asyncHandler(async (req, res) => {
   }
 });
 
-// Unfollow a user
 exports.unfollowUser = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
     const userId = req.user.id;
     
-    // Check if relationship exists
     const relationship = await Relationship.findOne({
       follower: userId,
       following: id
@@ -160,10 +147,8 @@ exports.unfollowUser = asyncHandler(async (req, res) => {
       throw new Error('Not following this user');
     }
     
-    // Remove relationship
     await relationship.remove();
     
-    // Update follower/following counts
     await User.findByIdAndUpdate(userId, {
       $inc: { followingCount: -1 }
     });

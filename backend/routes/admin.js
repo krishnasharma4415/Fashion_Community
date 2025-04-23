@@ -129,14 +129,12 @@ router.get('/stats', auth, admin, async (req, res) => {
 
 // ---------------------- REPORT MANAGEMENT ----------------------
 
-// routes/admin.js
 router.get('/reports', auth, admin, async (req, res) => {
     try {
       const reports = await Report.find()
         .populate('reporter', 'username email')
         .lean();
   
-      // Fetch target info based on report type
       const populateTargets = async (reports) => {
         const populated = await Promise.all(reports.map(async (r) => {
           let targetDoc = null;

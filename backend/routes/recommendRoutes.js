@@ -6,7 +6,6 @@ router.get('/recommend/:postId', async (req, res) => {
     try {
         const postId = req.params.postId;
         
-        // Run the Python recommendation script
         const pythonProcess = spawn('python', [
             './fashion_recommender/mongo_integration.py',
             postId

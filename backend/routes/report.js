@@ -1,11 +1,9 @@
-// routes/report.js
 const express = require('express');
 const auth = require('../middleware/auth');
 const Report = require('../models/Report');
 
 const router = express.Router();
 
-// Submit a report (post, comment, or user)
 router.post('/', auth, async (req, res) => {
   try {
     const { type, target, reason, details } = req.body;

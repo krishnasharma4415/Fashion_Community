@@ -1,24 +1,19 @@
-// backend/ml/contentFilter.js
 const tf = require('@tensorflow/tfjs');
 const natural = require('natural');
 const fashionWordList = require('../utils/fashionKeywords');
 
-// Tokenizer for processing text
 const tokenizer = new natural.WordTokenizer();
 const stemmer = natural.PorterStemmer;
 
-// Pre-trained model paths (would be created/trained separately)
 const MODEL_PATH = './ml/models/fashion-classifier';
 let model;
 let fashionClassifier;
 
-// Fashion-related categories
 const FASHION_CATEGORIES = [
   'apparel', 'accessories', 'footwear', 'beauty', 'style', 'trends',
   'outfit', 'design', 'brands', 'runway', 'collection', 'seasonal'
 ];
 
-// Initialize the model
 async function loadModel() {
   try {
     model = await tf.loadLayersModel(`file://${MODEL_PATH}/model.json`);
@@ -26,30 +21,24 @@ async function loadModel() {
     return true;
   } catch (error) {
     console.error('Error loading fashion model:', error);
-    // Fallback to rule-based classification if model fails to load
     console.log('Using rule-based fashion classification as fallback');
     return false;
   }
 }
 
-// Rule-based classification system (fallback)
 function isRelatedToFashionRules(text, tags) {
-  // Clean and normalize text
   const normalizedText = text.toLowerCase();
   const words = tokenizer.tokenize(normalizedText);
   const stemmedWords = words.map(word => stemmer.stem(word));
   
-  // Check tags first (stronger signal)
   if (tags && tags.length > 0) {
     const normalizedTags = tags.map(tag => tag.toLowerCase().replace('#', ''));
     
-    // Count fashion-related tags
     const fashionTagCount = normalizedTags.filter(tag => 
       fashionWordList.some(keyword => tag.includes(keyword)) || 
       FASHION_CATEGORIES.some(category => tag.includes(category))
     ).length;
     
-    // If more than 40% of tags are fashion-related, approve
     if (fashionTagCount / normalizedTags.length >= 0.4) {
       return {
         isFashionRelated: true,
@@ -58,7 +47,6 @@ function isRelatedToFashionRules(text, tags) {
       };
     }
     
-    // Check for explicitly non-fashion tags
     const nonFashionTags = ['bored', 'noclass', 'politics', 'food', 'gaming'];
     const hasNonFashionTags = normalizedTags.some(tag => 
       nonFashionTags.some(nft => tag.includes(nft))
