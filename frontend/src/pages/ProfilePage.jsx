@@ -14,15 +14,14 @@ const ProfilePage = () => {
   const [savedPosts, setSavedPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const navigate = useNavigate();
+
   const openPost = (post) => setSelectedPost(post);
   const closePost = () => setSelectedPost(null);
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       const userData = JSON.parse(localStorage.getItem("user"));
-      console.log("👤 User data from localStorage:", userData);
       const userId = userData?._id;
 
       if (!userId) return;
@@ -89,7 +88,12 @@ const ProfilePage = () => {
               </div>
               <div className="profile-info">
                 <h1 className="username">{user.username}</h1>
-                <button className="edit-profile-btn">Edit Profile</button>
+                <button
+                  className="edit-profile-btn"
+                  onClick={() => navigate("/edit-profile")}
+                >
+                  Edit Profile
+                </button>
                 <div className="profile-stats">
                   <span><strong>{posts.length}</strong> posts</span>
                   <span><strong>1,200</strong> followers</span>
@@ -100,6 +104,7 @@ const ProfilePage = () => {
             </div>
           )}
 
+          {/* Tabs */}
           <div className="profile-tabs mt-6">
             <button
               className={`tab ${activeTab === "posts" ? "active" : ""}`}
@@ -115,6 +120,7 @@ const ProfilePage = () => {
             </button>
           </div>
 
+          {/* Post Grid */}
           {postsToDisplay.length === 0 ? (
             <div className="text-center mt-10 text-gray-500">
               {activeTab === "saved" ? "No saved posts yet." : "No posts yet."}
@@ -122,11 +128,12 @@ const ProfilePage = () => {
           ) : (
             <div className="posts-grid mt-4">
               {postsToDisplay.map((post) => (
-                <PostCard key={post._id} post={post} onClick={openPost} />
+                <PostCard key={post._id} post={post} onClick={() => openPost(post)} />
               ))}
             </div>
           )}
 
+          {/* Post Modal */}
           {selectedPost && (
             <PostDetails post={selectedPost} onClose={closePost} />
           )}
@@ -137,4 +144,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
