@@ -12,7 +12,9 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
+// Serve uploaded files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads/profiles', express.static(path.join(__dirname, 'uploads/profiles')));
 
 app.use('/api/admin', require('./routes/admin'));
 app.use("/api/auth", require("./routes/auth"));

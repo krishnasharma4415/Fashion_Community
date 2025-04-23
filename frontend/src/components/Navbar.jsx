@@ -62,7 +62,7 @@ function Navbar() {
               role="menuitem"
               onClick={() => {
                 setOpen(false);
-                navigate('/EditProfile'); // Updated path to EditProfile
+                navigate('/edit-profile'); // Updated path to match the route in App.jsx
               }}
             >
               Edit Profile
