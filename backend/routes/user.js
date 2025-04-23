@@ -73,6 +73,5 @@ router.put('/profile', auth, upload.single('profilePicture'), async (req, res) =
     res.status(500).json({ message: 'Server error' });
   }
 });
-
   
 module.exports = router;
