@@ -2,6 +2,7 @@ const express = require('express');
 const auth = require('../middleware/auth');
 const upload = require('../middleware/upload');
 const Post = require('../models/Post');
+const User = require('../models/User');
 
 const router = express.Router();
 
@@ -84,5 +85,48 @@ router.post('/upload', auth, upload.single('media'), (req, res) => {
         mediaType: req.file.mimetype.startsWith('image') ? 'image' : 'video'
     });
 });
+
+// Save or unsave post
+router.post('/save/:postId', auth, async (req, res) => {
+    const userId = req.user.id;
+    const { postId } = req.params;
+  
+    try {
+      const user = await User.findById(userId);
+      const index = user.savedPosts.indexOf(postId);
+  
+      if (index > -1) {
+        user.savedPosts.splice(index, 1); // unsave
+      } else {
+        user.savedPosts.push(postId); // save
+      }
+  
+      await user.save();
+      res.json({ message: 'Save status updated', savedPosts: user.savedPosts });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: 'Server error' });
+    }
+  });
+  
+  router.get('/saved/:userId', async (req, res) => {
+    try {
+      const user = await User.findById(req.params.userId).populate({
+        path: 'savedPosts',
+        populate: {
+          path: 'userId',
+          select: 'username profilePicture'
+        }
+      });
+  
+      if (!user) return res.status(404).json({ message: "User not found" });
+  
+      res.json(user.savedPosts);
+    } catch (err) {
+      console.error("❌ Error fetching saved posts:", err);
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+  
 
 module.exports = router;

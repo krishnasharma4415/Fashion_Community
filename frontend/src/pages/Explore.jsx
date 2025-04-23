@@ -19,14 +19,13 @@ export default function ExplorePage() {
     const fetchPosts = async () => {
       try {
         const response = await axios.get("/api/posts/");
-        console.log("Response Data:", response.data);
+        console.log("API Response:", response.data);
 
         if (Array.isArray(response.data)) {
           setSquares(response.data);
           setFilteredSquares(response.data);
         } else {
           console.error("Expected array but got:", typeof response.data);
-          console.log("Actual Response:", response.data);
           setSquares([]);
           setFilteredSquares([]);
         }
@@ -50,23 +49,28 @@ export default function ExplorePage() {
     // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      results = results.filter(
-        post =>
-          (post.caption && post.caption.toLowerCase().includes(query)) ||
-          (post.username && post.username.toLowerCase().includes(query)) ||
-          (post.tags && post.tags.some(tag => tag.toLowerCase().includes(query)))
-      );
+      results = results.filter(post => {
+        const username = post.username || post.user?.username || '';
+        const caption = post.caption || '';
+        const tags = post.tags || [];
+        
+        return (
+          caption.toLowerCase().includes(query) ||
+          username.toLowerCase().includes(query) ||
+          tags.some(tag => tag.toLowerCase().includes(query))
+        );
+      });
     }
 
     // Apply category filter
     if (activeFilter) {
-      results = results.filter(
-        post =>
-          (post.category && post.category === activeFilter) ||
-          (post.tags && post.tags.includes(activeFilter))
+      results = results.filter(post => 
+        post.category === activeFilter ||
+        (post.tags && post.tags.includes(activeFilter))
       );
     }
 
+    console.log("Filtered results:", results);
     setFilteredSquares(results);
   }, [searchQuery, activeFilter, squares]);
 
@@ -86,10 +90,8 @@ export default function ExplorePage() {
     <div className="bg-[#f2ecf9] h-screen flex flex-col">
       <Navbar />
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - Visible with collapsible toggle */}
         <Sidebar />
         <main className="flex-1 overflow-y-auto">
-          {/* Sticky Header */}
           <div className="sticky top-0 z-20 bg-[#f2ecf9] px-6 pt-4">
             <SearchAndFilters
               onSearch={handleSearch}
@@ -102,7 +104,9 @@ export default function ExplorePage() {
           <div className="max-w-[1260px] mx-auto">
             {filteredSquares.length === 0 && !loading ? (
               <div className="text-center py-10 text-gray-500">
-                No posts found matching your search or filter criteria.
+                {searchQuery || activeFilter 
+                  ? "No posts match your search criteria" 
+                  : "No posts available"}
               </div>
             ) : (
               Array.from({ length: Math.ceil(filteredSquares.length / 5) }).map((_, groupIdx) => {
@@ -116,37 +120,31 @@ export default function ExplorePage() {
                   <div key={groupIdx} className="flex gap-4 mb-4">
                     {isEven ? (
                       <>
-                        {/* Left - 4 squares */}
                         <div className="grid grid-cols-2 gap-4">
-                          {filteredSquares.map((post, idx) => (
-                            <div key={post._id || idx}>
+                          {squaresPosts.map((post) => (
+                            <div key={post._id}>
                               <PostCard post={post} />
                             </div>
                           ))}
                         </div>
 
-                        {/* Right - portrait */}
                         {portrait && (
-                          <div
-                            className="bg-[#cfc46a] rounded-md"
-                            style={{ width: '419px', height: '840px' }}
-                          />
+                          <div className="w-[419px] h-[840px] bg-[#cfc46a] rounded-md">
+                            <Potrait post={portrait} />
+                          </div>
                         )}
                       </>
                     ) : (
                       <>
-                        {/* Left - portrait */}
                         {portrait && (
-                          <div
-                            className="bg-[#cfc46a] rounded-md"
-                            style={{ width: '419px', height: '840px' }}
-                          />
+                          <div className="w-[419px] h-[840px] bg-[#cfc46a] rounded-md">
+                            <Potrait post={portrait} />
+                          </div>
                         )}
 
-                        {/* Right - 4 squares */}
                         <div className="grid grid-cols-2 gap-4">
-                          {squaresPosts.map((post, idx) => (
-                            <div key={post.id || idx}>
+                          {squaresPosts.map((post) => (
+                            <div key={post._id}>
                               <PostCard post={post} />
                             </div>
                           ))}
@@ -159,7 +157,6 @@ export default function ExplorePage() {
             )}
           </div>
 
-          {/* Footer */}
           <div className="mt-10 text-center text-sm text-gray-500">
             User Since: Jan 2025 <br />
             © Fashion. 2025 | ver 0.4
