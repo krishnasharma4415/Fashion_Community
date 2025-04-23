@@ -1,5 +1,4 @@
 
-/* Auth Container */
 .auth-container {
   width: 100vw;
   height: 100vh;
@@ -10,7 +9,6 @@
   align-items: center;
 }
   
-  /* Navbar */
   .auth-navbar {
     padding: 1rem 2rem;
     display: flex;
@@ -25,15 +23,14 @@
     text-decoration: none;
   }
   
-  /* Form */
   .auth-form {
     max-width: 400px;
     margin: 2rem auto;
     padding: 2rem;
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.5); /* less transparent */
+    background-color: rgba(255, 255, 255, 0.5); 
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(6px); /* optional: subtle glassy effect */
+    backdrop-filter: blur(6px); 
   }
   
   .auth-form input {
@@ -54,7 +51,6 @@
     cursor: pointer;
   }
   
-  /* Animations */
   .animate-slideup {
     animation: slideUp 0.5s ease-out;
   }
@@ -64,7 +60,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
   
-  /* Success Message Styles */
   .success-message {
     text-align: center;
     padding: 2rem;
@@ -80,7 +75,6 @@
     animation: fadeIn 0.5s ease-in;
   }
   
-  /* Animation for success message */
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }

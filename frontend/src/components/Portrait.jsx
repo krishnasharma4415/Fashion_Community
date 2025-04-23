@@ -25,7 +25,6 @@ const Portrait = ({ post }) => {
         onMouseLeave={() => setShowOverlay(false)}
         onClick={handleClick}
       >
-        {/* Video Content (Only videos allowed) */}
         <video
           src={post.mediaUrl}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -34,7 +33,6 @@ const Portrait = ({ post }) => {
           playsInline
         />
 
-        {/* Hover Overlay */}
         <div
           className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 ${
             showOverlay ? 'opacity-100' : 'opacity-0'
@@ -56,7 +54,6 @@ const Portrait = ({ post }) => {
           </div>
         </div>
 
-        {/* User Info */}
         <div className="absolute top-0 left-0 p-2 flex items-center space-x-2">
           <img
             src={post.userAvatar}

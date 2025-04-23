@@ -8,7 +8,6 @@ export default function PostDetails({ post, onClose }) {
   const [newComment, setNewComment] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Fetch comments and check if post is liked by user on component mount
   useEffect(() => {
     fetchComments();
     checkIfLiked();
@@ -26,23 +25,13 @@ export default function PostDetails({ post, onClose }) {
     }
   };
 
-  // Check if the current user has liked this post
   const checkIfLiked = async () => {
     try {
-      // Get auth token
       const token = localStorage.getItem('authToken');
       if (!token) return;
-      
-      // This would need a new endpoint to check if a user has liked a post
-      // For now, we'll check using the like count
       const response = await fetch(`http://localhost:5000/api/likes/${post._id}`);
       const data = await response.json();
-      
-      // Update like count
       setLikeCount(data.likes || post.likeCount || 0);
-      
-      // You may need to add an endpoint that returns whether the current user has liked the post
-      // For now, you'll have to handle the liked state in the frontend
     } catch (error) {
       console.error("Error checking like status:", error);
     }
@@ -57,7 +46,6 @@ export default function PostDetails({ post, onClose }) {
       }
 
       if (isLiked) {
-        // Unlike post
         const response = await fetch(`http://localhost:5000/api/likes/${post._id}`, {
           method: 'DELETE',
           headers: {
@@ -69,7 +57,6 @@ export default function PostDetails({ post, onClose }) {
           setLikeCount(prev => Math.max(0, prev - 1));
         }
       } else {
-        // Like post
         const response = await fetch(`http://localhost:5000/api/likes/${post._id}`, {
           method: 'POST',
           headers: {
@@ -112,7 +99,6 @@ export default function PostDetails({ post, onClose }) {
       const data = await response.json();
       
       if (response.ok) {
-        // Refresh comments to get the new comment with user data
         fetchComments();
         setNewComment("");
       } else {
@@ -125,16 +111,14 @@ export default function PostDetails({ post, onClose }) {
     }
   };
 
-  // Format the date - assuming post.createdAt is available
   const formattedDate = post.createdAt 
     ? new Date(post.createdAt).toLocaleDateString('en-US', { 
         day: 'numeric', 
         month: 'long', 
         year: 'numeric' 
       })
-    : "05 April, 2025"; // Fallback date
+    : "05 April, 2025"; 
 
-  // Helper function to get full URL for avatar
   const getMediaUrl = (url) => {
     return url?.startsWith('http') 
       ? url 
@@ -145,7 +129,6 @@ export default function PostDetails({ post, onClose }) {
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
       <div className="bg-[#f2ecf9] rounded-xl shadow-lg w-full max-w-3xl overflow-hidden">
         <div className="flex flex-col md:flex-row">
-          {/* Left side - Image/Video */}
           <div className="w-full md:w-2/3 bg-black">
             {post.media && post.media.length > 0 && post.media[0].type === 'video' ? (
               <video
@@ -165,9 +148,7 @@ export default function PostDetails({ post, onClose }) {
             )}
           </div>
           
-          {/* Right side - Details */}
           <div className="w-full md:w-1/3 flex flex-col">
-            {/* Header with close button */}
             <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center space-x-3">
                 <img
@@ -184,9 +165,7 @@ export default function PostDetails({ post, onClose }) {
               </button>
             </div>
             
-            {/* Comments section */}
             <div className="flex-grow overflow-y-auto p-4">
-              {/* Caption */}
               <div className="flex items-start space-x-3 mb-4">
                 <img
                   src={post.userId?.profilePicture 
@@ -202,7 +181,6 @@ export default function PostDetails({ post, onClose }) {
                 </div>
               </div>
               
-              {/* Comments */}
               <div className="space-y-3 mt-6">
                 <h3 className="font-semibold">Comments</h3>
                 {comments.length === 0 ? (
@@ -232,7 +210,6 @@ export default function PostDetails({ post, onClose }) {
               </div>
             </div>
             
-            {/* Like, Comment, Save buttons */}
             <div className="p-4 border-t">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex space-x-4">
@@ -255,7 +232,6 @@ export default function PostDetails({ post, onClose }) {
                 <p className="font-semibold">{likeCount} likes</p>
               </div>
               
-              {/* Add comment form */}
               <div className="mt-2 flex items-center">
                 <input
                   type="text"

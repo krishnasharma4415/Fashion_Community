@@ -13,7 +13,6 @@ const EditProfile = () => {
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
 
-  // Prefill form with user data
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
@@ -51,7 +50,6 @@ const EditProfile = () => {
         },
       });
 
-      // Update localStorage with new user data
       if (res.data?.user) {
         localStorage.setItem('user', JSON.stringify(res.data.user));
       }
@@ -71,7 +69,6 @@ const EditProfile = () => {
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl mx-auto">
             <h2 className="text-xl font-semibold mb-6 text-center">Edit Profile</h2>
             <div className="flex flex-col items-center space-y-6">
-              {/* Profile Picture */}
               <div className="relative">
                 <div className="w-32 h-32 rounded-full overflow-hidden">
                   <img
@@ -95,7 +92,6 @@ const EditProfile = () => {
                 />
               </div>
 
-              {/* Form Fields */}
               <div className="w-full space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Username</label>

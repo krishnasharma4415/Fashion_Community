@@ -30,7 +30,6 @@ const NewPost = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const fileInputRef = useRef(null);
 
-  // Check authentication on component mount
   useEffect(() => {
     const token = localStorage.getItem("authToken");
 
@@ -51,12 +50,10 @@ const NewPost = () => {
 
     setSelectedFiles(files);
 
-    // Create object URLs for previews
     const newPreviews = files.map((file) => URL.createObjectURL(file));
     setPreviews(newPreviews);
   };
 
-  // Clean up object URLs on unmount
   useEffect(() => {
     return () => {
       previews.forEach(preview => URL.revokeObjectURL(preview));
@@ -67,7 +64,6 @@ const NewPost = () => {
     setPreviews(prev => prev.filter((_, i) => i !== index));
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
 
-    // Reset the file input if all images are removed
     if (previews.length === 1 && fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -85,7 +81,7 @@ const NewPost = () => {
 
     const formData = new FormData();
     selectedFiles.forEach((file) => {
-      formData.append("media", file); // This matches the multer field name
+      formData.append("media", file);
     });
     formData.append("caption", caption);
     if (tags.trim()) formData.append("tags", tags);
@@ -102,13 +98,11 @@ const NewPost = () => {
       const response = await axios.post("http://localhost:5000/api/posts", formData, {
         headers: {
           Authorization: `Bearer ${token}`
-          // Content-Type will be set automatically with correct boundary for FormData
         },
       });
 
       console.log("✅ Post created:", response.data);
 
-      // Reset form
       setPreviews([]);
       setCaption("");
       setTags("");
@@ -118,7 +112,7 @@ const NewPost = () => {
       setSuccessMessage("🎉 Post uploaded successfully!");
       setTimeout(() => {
         setSuccessMessage("");
-        navigate("/explore"); // Redirect to explore page after successful post
+        navigate("/explore"); 
       }, 2000);
     } catch (error) {
       console.error("❌ Error uploading post:", error);
@@ -146,12 +140,10 @@ const NewPost = () => {
 
   return (
     <div className="bg-[#f2ecf9] min-h-screen pt-20">
-    {/* Top Navbar */}
     <div className="fixed top-0 left-0 w-full z-20">
       <Navbar />
     </div>
 
-    {/* Left Sidebar */}
     <div className="fixed top-14 left-0 h-[calc(100vh-3.5rem)] w-60 z-10">
       <Sidebar />
     </div>
@@ -175,7 +167,6 @@ const NewPost = () => {
          <div className="flex justify-center pt-24 pb-10">
 
           <div className="w-full max-w-6xl bg-white rounded-lg shadow p-4 flex flex-col md:flex-row gap-4">
-            {/* Image preview or upload */}
             <div className="w-full md:w-1/2 h-full flex flex-col gap-2 justify-center items-center border border-gray-300 rounded-lg overflow-auto p-4">
               {previews.length > 0 ? (
                 <div className="w-full">
@@ -219,7 +210,6 @@ const NewPost = () => {
               )}
             </div>
 
-            {/* Caption and Tags */}
             <div className="w-full md:w-1/2 flex flex-col gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-xs">

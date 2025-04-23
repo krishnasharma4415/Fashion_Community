@@ -15,7 +15,6 @@ const EditProfilePage = () => {
 
   const navigate = useNavigate();
 
-  // Check authentication
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (!token) {
@@ -23,7 +22,6 @@ const EditProfilePage = () => {
     }
   }, [navigate]);
 
-  // Fetch current user data
   useEffect(() => {
     const fetchUserData = async () => {
       setLoading(true);
@@ -37,7 +35,6 @@ const EditProfilePage = () => {
           return;
         }
 
-        // Test token with backend - see if it's valid
         console.log("Testing token:", token);
         const tokenTest = await fetch("http://localhost:5000/api/auth/check-token", {
           method: "GET",
@@ -56,7 +53,6 @@ const EditProfilePage = () => {
           return;
         }
 
-        // Fetch user data by ID
         const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`
@@ -85,12 +81,10 @@ const EditProfilePage = () => {
     fetchUserData();
   }, [navigate]);
 
-  // Handle file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setProfilePicture(file);
-      // Generate preview URL
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreviewUrl(reader.result);
@@ -99,7 +93,6 @@ const EditProfilePage = () => {
     }
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -112,7 +105,6 @@ const EditProfilePage = () => {
         return;
       }
 
-      // Create the FormData object
       const formData = new FormData();
       formData.append("username", username);
       formData.append("bio", bio || "");
@@ -126,16 +118,13 @@ const EditProfilePage = () => {
         hasProfilePicture: !!profilePicture
       });
 
-      // Debug token
       console.log("Token being sent:", token);
       console.log("Token length:", token ? token.length : 0);
       
-      // Log the FormData entries for debugging
       for (let pair of formData.entries()) {
         console.log(pair[0] + ': ' + (pair[0] === 'profilePicture' ? 'FILE' : pair[1]));
       }
       
-      // Direct fetch to user by ID to verify token works
       const userId = JSON.parse(localStorage.getItem("user") || "{}")._id;
       console.log("Testing token with user fetch:", userId);
       const userTest = await fetch(`http://localhost:5000/api/users/${userId}`, {
@@ -145,7 +134,6 @@ const EditProfilePage = () => {
       });
       console.log("User fetch test result:", userTest.status);
 
-      // Update profile using PUT request
       const response = await fetch("http://localhost:5000/api/users/profile", {
         method: "PUT",
         headers: {
@@ -174,15 +162,12 @@ const EditProfilePage = () => {
       const data = await response.json();
       console.log("Response data:", data);
 
-      // Success!
       setMessage({ text: "Profile updated successfully", type: "success" });
       
-      // Update local storage user data
       const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
       const updatedUser = { ...currentUser, ...data.user };
       localStorage.setItem("user", JSON.stringify(updatedUser));
       
-      // Redirect after a short delay
       setTimeout(() => {
         navigate("/profile");
       }, 1500);
@@ -216,7 +201,6 @@ const EditProfilePage = () => {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Profile Picture */}
               <div className="flex flex-col items-center mb-6">
                 <div className="relative w-32 h-32 mb-4">
                   <img
@@ -243,7 +227,6 @@ const EditProfilePage = () => {
                 </label>
               </div>
 
-              {/* Username */}
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">Username</label>
                 <input
@@ -258,7 +241,6 @@ const EditProfilePage = () => {
                 />
               </div>
 
-              {/* Bio */}
               <div>
                 <label htmlFor="bio" className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
                 <textarea
@@ -272,7 +254,6 @@ const EditProfilePage = () => {
                 <p className="text-xs text-gray-500 mt-1">{bio ? bio.length : 0}/150 characters</p>
               </div>
 
-              {/* Submit Button */}
               <div className="flex justify-center">
                 <button
                   type="submit"

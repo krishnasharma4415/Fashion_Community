@@ -130,14 +130,12 @@ const PostCard = ({ post }) => {
           )
         )}
 
-        {/* Hover overlay */}
         <div
           className={`absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center transition-opacity duration-300 ${
             showOverlay ? 'opacity-100' : 'opacity-0'
           }`}
         >
           <div className="flex space-x-6 text-white">
-            {/* Like */}
             <div className="flex items-center space-x-1">
               {isLiked ? (
                 <HeartIconSolid
@@ -153,13 +151,11 @@ const PostCard = ({ post }) => {
               <span>{likeCount}</span>
             </div>
 
-            {/* Comments */}
             <div className="flex items-center space-x-1">
               <ChatBubbleOvalLeftIcon className="h-6 w-6" />
               <span>{post.commentCount || 0}</span>
             </div>
 
-            {/* Save */}
             <div className="flex items-center space-x-1">
               {isSaved ? (
                 <BookmarkSolidIcon
@@ -176,7 +172,6 @@ const PostCard = ({ post }) => {
           </div>
         </div>
 
-        {/* User info */}
         <div className="absolute top-0 left-0 p-2 flex items-center space-x-2">
           <img
             src={

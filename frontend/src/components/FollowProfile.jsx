@@ -46,12 +46,9 @@ const FollowProfile = () => {
     );
   }, [profileId]);
 
-  // 🔁 Optional: Fetch actual follow status from API here
   useEffect(() => {
     const fetchFollowStatus = async () => {
       try {
-        // const response = await axios.get(`/api/follow-status/${profileId}`);
-        // setIsFollowing(response.data.isFollowing);
         console.log(`Fetching follow status for ${profileId}`);
       } catch (error) {
         console.error("Error fetching follow status:", error);
@@ -64,7 +61,6 @@ const FollowProfile = () => {
     setLoadingFollow(true);
     try {
       console.log(`Sending follow request to ${profileId}`);
-      // await axios.post(`/api/follow/${profileId}`);
       setIsFollowing(true);
     } catch (error) {
       console.error("Failed to follow user:", error);
@@ -77,7 +73,6 @@ const FollowProfile = () => {
     setLoadingFollow(true);
     try {
       console.log(`Sending unfollow request to ${profileId}`);
-      // await axios.delete(`/api/unfollow/${profileId}`);
       setIsFollowing(false);
     } catch (error) {
       console.error("Failed to unfollow user:", error);
@@ -154,7 +149,6 @@ const FollowProfile = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto bg-[#f2ecf9] min-h-screen">
-          {/* Profile Header */}
           <div className="profile-header">
             <div className="profile-avatar">
               <img src={userProfile.avatar} alt="Profile" className="avatar-img" />
@@ -181,7 +175,6 @@ const FollowProfile = () => {
             </div>
           </div>
 
-          {/* Tabs */}
           <div className="profile-tabs mt-6">
             <button
               className={`tab ${activeTab === "posts" ? "active" : ""}`}
@@ -197,7 +190,6 @@ const FollowProfile = () => {
             </button>
           </div>
 
-          {/* Posts Grid */}
           <div className="posts-grid mt-4">
             {posts
               .filter((post) => (activeTab === "posts" ? true : post.saved))
@@ -212,7 +204,6 @@ const FollowProfile = () => {
               ))}
           </div>
 
-          {/* Post Modal */}
           {selectedPost && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
               <div className="bg-white rounded-xl p-4 max-w-lg w-full relative shadow-lg">

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaHome, FaUsers, FaFlag, FaBell, FaBars } from "react-icons/fa";
 
-// Mock data for demonstration
 const statsData = {
   totalUsers: 25,
   totalPosts: 25,
@@ -47,7 +46,7 @@ const Admin = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         const users = await res.json();
-        setRecentUsers(users.slice(-7).reverse()); // Get latest 7
+        setRecentUsers(users.slice(-7).reverse()); 
       } catch (err) {
         console.error("Error fetching users:", err);
       }
@@ -57,7 +56,6 @@ const Admin = () => {
     fetchRecentUsers();
   }, []);
 
-  // Mock data for chart
   const chartData = {
     dates: ["15 Apr", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "21 Apr"],
   };
@@ -71,7 +69,6 @@ const Admin = () => {
 
   return (
     <div className="flex h-screen bg-[#E9E8EF]">
-      {/* Sidebar */}
       <div
         className={`fixed top-0 left-0 h-full bg-[#E9E8EF] text-black z-40 transition-all duration-300 ease-in-out
         ${isOpen ? "w-48" : "w-0"} 
@@ -79,12 +76,10 @@ const Admin = () => {
         overflow-hidden md:overflow-visible`}
         role="navigation"
       >
-        {/* Logo at top */}
         <div className="p-4 font-bold text-xl">
           FASHION.
         </div>
 
-        {/* Top section with navigation items */}
         <div className="flex flex-col items-start py-8 px-4 space-y-6 flex-grow">
           {navItems.map((item, index) => (
             <Link
@@ -99,7 +94,6 @@ const Admin = () => {
           ))}
         </div>
 
-        {/* Mobile toggle button */}
         <div className="md:hidden p-4 flex justify-center items-center">
           <button onClick={toggleSidebar} aria-label="Toggle sidebar" className="text-2xl">
             <FaBars />
@@ -107,9 +101,7 @@ const Admin = () => {
         </div>
       </div>
 
-      {/* Main content */}
       <div className="flex-1 overflow-auto p-6">
-        {/* User profile icon in the top right */}
         <div className="flex justify-end mb-4">
           <div className="bg-black text-white p-2 rounded-full">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -140,9 +132,7 @@ const Admin = () => {
           </div>
         </div>
 
-        {/* New Users Chart and Recent Users sections */}
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* New Users Joined Graph */}
           <div className="w-full lg:w-2/3">
             <div className="flex justify-between items-center mb-3">
               <h2 className="font-semibold">New Users Joined</h2>
@@ -156,7 +146,6 @@ const Admin = () => {
               </div>
             </div>
             <div className="bg-[#e2e2da] rounded-lg p-4 h-72">
-              {/* SVG chart for demonstration - this would be replaced with a real chart component in production */}
               <svg viewBox="0 0 800 300" className="w-full h-full">
                 <path
                   d="M0,200 C50,150 100,250 150,200 C200,150 250,180 300,120 C350,60 400,120 450,150 C500,180 550,90 600,120 C650,150 700,250 750,200 L750,300 L0,300 Z"
@@ -173,7 +162,6 @@ const Admin = () => {
                   strokeLinejoin="round"
                 />
 
-                {/* Add some dots at data points */}
                 <circle cx="0" cy="200" r="5" fill="#6495ED" />
                 <circle cx="150" cy="200" r="5" fill="#6495ED" />
                 <circle cx="300" cy="120" r="5" fill="#6495ED" />
@@ -184,7 +172,6 @@ const Admin = () => {
             </div>
           </div>
 
-          {/* Recent Users */}
           <div className="w-full lg:w-1/3">
             <h2 className="font-semibold mb-3">Recent Users</h2>
             <div className="bg-[#e2e2da] rounded-lg p-4">

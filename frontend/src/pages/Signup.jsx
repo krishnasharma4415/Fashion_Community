@@ -29,7 +29,6 @@ const Signup = () => {
     }
 
     try {
-      // Actually call the register API
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {

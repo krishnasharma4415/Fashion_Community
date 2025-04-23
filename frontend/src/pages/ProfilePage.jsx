@@ -21,7 +21,6 @@ const ProfilePage = () => {
   const closePost = () => setSelectedPost(null);
 
   useEffect(() => {
-    // Check if user is authenticated first
     const checkAuthentication = async () => {
       const token = localStorage.getItem("authToken");
       const userData = JSON.parse(localStorage.getItem("user") || "{}");
@@ -31,7 +30,6 @@ const ProfilePage = () => {
         setError("User not authenticated. Please log in.");
         setLoading(false);
         
-        // Optional: redirect to login after a delay
         setTimeout(() => {
           navigate("/login");
         }, 2000);
@@ -196,7 +194,6 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {/* Tabs */}
           <div className="profile-tabs mt-6">
             <button
               className={`tab ${activeTab === "posts" ? "active" : ""}`}
@@ -212,7 +209,6 @@ const ProfilePage = () => {
             </button>
           </div>
 
-          {/* Post Grid */}
           {postsToDisplay.length === 0 ? (
             <div className="text-center mt-10 text-gray-500">
               {activeTab === "saved" ? "No saved posts yet." : "No posts yet."}
@@ -225,7 +221,6 @@ const ProfilePage = () => {
             </div>
           )}
 
-          {/* Post Modal */}
           {selectedPost && (
             <PostDetails post={selectedPost} onClose={closePost} />
           )}
