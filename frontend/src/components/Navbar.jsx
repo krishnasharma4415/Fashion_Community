@@ -10,7 +10,6 @@ function Navbar() {
   const menuRef = useRef();
   const navigate = useNavigate();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -25,12 +24,11 @@ function Navbar() {
     };
   }, [open]);
 
-  // Logout handler
   const handleLogout = () => {
     localStorage.removeItem('authToken');
     setIsAuthenticated(false);
     setOpen(false);
-    navigate('/login'); // navigate to the login page
+    navigate('/login'); 
   };
 
   return (
@@ -42,7 +40,6 @@ function Navbar() {
           aria-label="Profile"
           onClick={() => setOpen((v) => !v)}
         >
-          {/* Profile SVG icon */}
           <svg
             width="26"
             height="26"
@@ -62,7 +59,7 @@ function Navbar() {
               role="menuitem"
               onClick={() => {
                 setOpen(false);
-                navigate('/edit-profile'); // Updated path to match the route in App.jsx
+                navigate('/edit-profile');
               }}
             >
               Edit Profile

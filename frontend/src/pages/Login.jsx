@@ -36,13 +36,11 @@ const LoginPage = () => {
       if (res.ok) {
         console.log('✅ Login successful:', data);
         
-        // Store token and user info in localStorage
         localStorage.setItem('authToken', data.token);
         
-        // Ensure user object has _id
         const userData = {
           ...data.user,
-          _id: data.user._id || data.user.id // Handle both formats
+          _id: data.user._id || data.user.id 
         };
         
         console.log('Saving user data to localStorage:', userData);

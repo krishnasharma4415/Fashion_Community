@@ -14,7 +14,6 @@ export default function ExplorePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState(null);
 
-  // Fetch data from your API
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -40,13 +39,11 @@ export default function ExplorePage() {
     fetchPosts();
   }, []);
 
-  // Effect to filter posts when search or filter changes
   useEffect(() => {
     if (!squares.length) return;
 
     let results = [...squares];
 
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       results = results.filter(post => {
@@ -62,7 +59,6 @@ export default function ExplorePage() {
       });
     }
 
-    // Apply category filter
     if (activeFilter) {
       results = results.filter(post => 
         post.category === activeFilter ||
@@ -74,7 +70,6 @@ export default function ExplorePage() {
     setFilteredSquares(results);
   }, [searchQuery, activeFilter, squares]);
 
-  // Handle search and filter changes
   const handleSearch = (value) => {
     setSearchQuery(value);
   };

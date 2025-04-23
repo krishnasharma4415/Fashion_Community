@@ -9,20 +9,16 @@ const Updates = () => {
 
   return (
     <div className="h-screen flex flex-col bg-[#f2ecf9]">
-      {/* Sticky Navbar at top */}
       <div className="sticky top-0 z-50 bg-[#f2ecf9]">
         <Navbar />
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - sticky and full height */}
         <div className="w-[220px] bg-[#f2ecf9] sticky top-[64px] h-[calc(100vh-64px)]">
           <Sidebar />
         </div>
 
-        {/* Scrollable main content */}
         <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6 bg-[#f2ecf9]">
-          {/* Tabs */}
           <div className="flex justify-center sticky top-0 z-40 bg-[#f2ecf9] pt-2 pb-4">
             <div className="flex gap-6 border-b border-gray-300">
               {["all", "mentions", "followers"].map((tab) => (
@@ -41,7 +37,6 @@ const Updates = () => {
             </div>
           </div>
 
-          {/* Update Timeline (Replace with backend mapped data) */}
           <div className="space-y-6">
             <div>
               <p className="text-sm text-gray-600 font-semibold">TODAY</p>
@@ -78,7 +73,6 @@ const Updates = () => {
           </div>
         </div>
 
-        {/* Suggestions - sticky and full height */}
         <div className="w-[280px] bg-[#f2ecf9] sticky top-[64px] h-[calc(100vh-64px)]">
           <Suggestions />
         </div>
