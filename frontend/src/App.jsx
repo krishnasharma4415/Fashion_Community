@@ -9,7 +9,7 @@ import Signup from "./pages/Signup.jsx";
 import './index.css';
 import './App.css';
 import Admin from "./pages/Admin.jsx";
-import EditProfile from "./pages/EditProfile.jsx";
+import EditProfilePage from "./pages/EditProfilePage.jsx";
 import FollowProfile from "./components/FollowProfile.jsx";
 
 export default function App() {
@@ -26,7 +26,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/admin" element={<Admin />} />
-      <Route path="/EditProfile" element={<EditProfile />} />
+      <Route path="/edit-profile" element={<EditProfilePage />} />
       <Route path="/profile/:profileId" element={<FollowProfile />} />
     </Routes>
   );
