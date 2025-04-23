@@ -89,7 +89,6 @@ const ProfilePage = () => {
               </div>
               <div className="profile-info">
                 <h1 className="username">{user.username}</h1>
-                <button className="edit-profile-btn">Edit Profile</button>
                 <div className="profile-stats">
                   <span><strong>{posts.length}</strong> posts</span>
                   <span><strong>1,200</strong> followers</span>

@@ -37,17 +37,18 @@ export default function Home() {
         {/* Sidebar - Visible with collapsible toggle */}
         <Sidebar />
 
-        {/* Post Feed - Scrollable Middle */}
-        <div className="flex-1 overflow-y-auto px-4 py-6">
-          {loading ? (
-            <div>Loading posts...</div>
-          ) : (
-            posts.map(post => (
-              <PostCard key={post._id} post={post} />
-            ))
-          )}
-        </div>
-
+      {/* Post Feed - Scrollable Middle */}
+      <div className="flex-1 overflow-y-auto px-4 py-6 flex justify-center">
+      <div className="w-full max-w-xl space-y-6">
+      {loading ? (
+      <div>Loading posts...</div>
+       ) : (
+       posts.map(post => (
+         <PostCard key={post._id} post={post} />
+       ))
+      )}
+    </div>
+  </div>
         {/* Suggestions - Sticky Right (optional on mobile) */}
         <div className="hidden lg:block sticky top-0 h-full w-[250px]">
           <Suggestions />
