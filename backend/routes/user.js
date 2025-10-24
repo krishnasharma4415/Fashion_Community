@@ -1,6 +1,6 @@
 const express = require("express");
 const auth = require("../middleware/auth");
-const { uploadProfile } = require('../middleware/cloudinaryUpload');
+const { uploadProfile, processProfileUpload } = require('../middleware/cloudinaryUpload');
 const User = require("../models/User");
 
 const router = express.Router();
@@ -12,32 +12,17 @@ router.get("/test-auth", auth, async (req, res) => {
 });
 
 // Profile update route (must be before /:id routes)
-router.put('/profile', auth, (req, res) => {
+router.put('/profile', auth, uploadProfile.single('profilePicture'), processProfileUpload, async (req, res) => {
   console.log("=== PROFILE UPDATE ROUTE HIT ===");
   console.log("User from auth middleware:", req.user);
   console.log("Request headers:", req.headers);
   
-  // Use multer middleware conditionally
-  uploadProfile.single('profilePicture')(req, res, async (err) => {
-    try {
-      console.log("Profile update request received:", {
-        userId: req.user ? req.user.id : 'NO USER',
-        body: req.body,
-        file: req.file ? `${req.file.fieldname} received` : 'no file',
-        multerError: err ? err.message : 'none'
-      });
-
-      // Handle multer errors
-      if (err) {
-        console.error("Multer error:", err);
-        if (err.code === 'LIMIT_FILE_SIZE') {
-          return res.status(400).json({ message: 'File too large. Maximum size is 5MB.' });
-        }
-        if (err.message === 'Only image files are allowed!') {
-          return res.status(400).json({ message: 'Only image files are allowed.' });
-        }
-        return res.status(400).json({ message: 'File upload error: ' + err.message });
-      }
+  try {
+    console.log("Profile update request received:", {
+      userId: req.user ? req.user.id : 'NO USER',
+      body: req.body,
+      file: req.file ? `${req.file.fieldname} received` : 'no file'
+    });
 
       const user = await User.findById(req.user.id);
 
@@ -81,11 +66,10 @@ router.put('/profile', auth, (req, res) => {
           profilePicture: updatedUser.profilePicture,
         },
       });
-    } catch (error) {
-      console.error('Profile update error:', error);
-      res.status(500).json({ message: 'Server error: ' + error.message });
-    }
-  });
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
+  }
 });
 
 // Search users by username or email (must be before /:id routes)

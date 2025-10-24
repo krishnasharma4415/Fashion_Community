@@ -1,13 +1,13 @@
 const express = require('express');
 const auth = require('../middleware/auth');
-const { uploadPost } = require('../middleware/cloudinaryUpload');
+const { uploadPost, processPostUpload } = require('../middleware/cloudinaryUpload');
 const Post = require('../models/Post');
 const User = require('../models/User');
 const { validateText } = require('../ml/fashionDetector');
 
 const router = express.Router();
 
-router.post('/', auth, uploadPost.array('media', 10), async (req, res) => {
+router.post('/', auth, uploadPost.array('media', 10), processPostUpload, async (req, res) => {
     try {
         console.log('📝 Post creation request received');
         console.log('User ID:', req.user.id);
@@ -177,7 +177,7 @@ router.get('/user/:userId', auth, async (req, res) => {
     }
 });
 
-router.post('/upload', auth, uploadPost.single('media'), (req, res) => {
+router.post('/upload', auth, uploadPost.single('media'), processPostUpload, (req, res) => {
     if (!req.file) return res.status(400).json({ message: 'File upload failed' });
 
     res.json({

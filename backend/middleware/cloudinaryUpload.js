@@ -1,36 +1,37 @@
 const multer = require('multer');
 const cloudinary = require('../config/cloudinary');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const path = require('path');
 
-// Configure Cloudinary storage for posts
-const postStorage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'fashion-community/posts',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-    transformation: [
-      { width: 1080, height: 1080, crop: 'limit', quality: 'auto' }
-    ]
-  },
-});
+// Configure multer for memory storage (we'll upload to Cloudinary manually)
+const storage = multer.memoryStorage();
 
-console.log('☁️ Cloudinary post storage configured for folder: fashion-community/posts');
+console.log('☁️ Cloudinary upload middleware configured');
 
-// Configure Cloudinary storage for profile pictures
-const profileStorage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'fashion-community/profiles',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-    transformation: [
-      { width: 400, height: 400, crop: 'fill', gravity: 'face', quality: 'auto' }
-    ]
-  },
-});
+// Helper function to upload to Cloudinary
+const uploadToCloudinary = (buffer, folder, transformation = {}) => {
+  return new Promise((resolve, reject) => {
+    const uploadOptions = {
+      folder: `fashion-community/${folder}`,
+      resource_type: 'auto',
+      ...transformation
+    };
 
-// Multer configuration for posts
+    cloudinary.uploader.upload_stream(
+      uploadOptions,
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      }
+    ).end(buffer);
+  });
+};
+
+// Middleware to handle post uploads
 const uploadPost = multer({
-  storage: postStorage,
+  storage: storage,
   limits: {
     fileSize: 10 * 1024 * 1024, // 10MB limit
   },
@@ -46,9 +47,9 @@ const uploadPost = multer({
   }
 });
 
-// Multer configuration for profile pictures
+// Middleware to handle profile picture uploads
 const uploadProfile = multer({
-  storage: profileStorage,
+  storage: storage,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
   },
@@ -61,8 +62,65 @@ const uploadProfile = multer({
   }
 });
 
+// Middleware to process uploaded files and upload to Cloudinary
+const processPostUpload = async (req, res, next) => {
+  if (!req.files || req.files.length === 0) {
+    return next();
+  }
+
+  try {
+    const uploadPromises = req.files.map(file => 
+      uploadToCloudinary(file.buffer, 'posts', {
+        transformation: [
+          { width: 1080, height: 1080, crop: 'limit', quality: 'auto' }
+        ]
+      })
+    );
+
+    const results = await Promise.all(uploadPromises);
+    
+    // Add Cloudinary results to req.files
+    req.files = req.files.map((file, index) => ({
+      ...file,
+      path: results[index].secure_url,
+      filename: results[index].public_id
+    }));
+
+    next();
+  } catch (error) {
+    console.error('Cloudinary upload error:', error);
+    res.status(500).json({ message: 'Image upload failed' });
+  }
+};
+
+// Middleware to process profile picture upload
+const processProfileUpload = async (req, res, next) => {
+  if (!req.file) {
+    return next();
+  }
+
+  try {
+    const result = await uploadToCloudinary(req.file.buffer, 'profiles', {
+      transformation: [
+        { width: 400, height: 400, crop: 'fill', gravity: 'face', quality: 'auto' }
+      ]
+    });
+
+    // Add Cloudinary results to req.file
+    req.file.path = result.secure_url;
+    req.file.filename = result.public_id;
+
+    next();
+  } catch (error) {
+    console.error('Cloudinary upload error:', error);
+    res.status(500).json({ message: 'Profile picture upload failed' });
+  }
+};
+
 module.exports = {
   uploadPost,
   uploadProfile,
+  processPostUpload,
+  processProfileUpload,
   cloudinary
 };
