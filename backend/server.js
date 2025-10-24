@@ -9,7 +9,16 @@ const app = express();
 
 connectDB();
 
-app.use(cors());
+// CORS configuration for production
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-frontend-domain.vercel.app'] // Will update this after Vercel deployment
+    : ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Cloudinary handles file serving, no need for local uploads static serving
