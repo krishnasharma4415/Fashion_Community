@@ -53,7 +53,7 @@ const UserProfile = () => {
       ]);
 
       setUser(userRes.data);
-      setPosts(postsRes.data);
+      setPosts(Array.isArray(postsRes.data) ? postsRes.data : []);
       
       // If it's the current user's profile, redirect to main profile page
       if (userRes.data.isOwnProfile) {

@@ -62,7 +62,7 @@ const PostCard = ({ post }) => {
 
     try {
       const res = await axios.get(getApiUrl(`/api/posts/saved/${userId}`));
-      const savedPostIds = res.data.map(p => p._id);
+      const savedPostIds = Array.isArray(res.data) ? res.data.map(p => p._id) : [];
       setIsSaved(savedPostIds.includes(post._id));
     } catch (err) {
       console.error("Error checking save status:", err);

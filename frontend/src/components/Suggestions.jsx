@@ -42,9 +42,10 @@ export default function Suggestions() {
       });
 
       if (response.data.success) {
-        setUsers(response.data.data);
+        setUsers(Array.isArray(response.data.data) ? response.data.data : []);
       } else {
         setError("Failed to load suggestions");
+        setUsers([]);
       }
     } catch (error) {
       console.error("Error fetching suggestions:", error);
@@ -53,6 +54,7 @@ export default function Suggestions() {
       } else {
         setError("Failed to load suggestions");
       }
+      setUsers([]);
     } finally {
       setLoading(false);
     }
@@ -164,7 +166,7 @@ export default function Suggestions() {
 
       {/* User List */}
       <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
-        {(showAll ? users : users.slice(0, 5)).map((user) => (
+        {(Array.isArray(users) ? (showAll ? users : users.slice(0, 5)) : []).map((user) => (
           <div
             key={user._id}
             className="group flex items-center gap-3 p-3 rounded-xl hover:bg-[#f2ecf9]/50 transition-all duration-200"

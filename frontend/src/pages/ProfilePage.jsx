@@ -63,7 +63,7 @@ const ProfilePage = () => {
 
       console.log("Fresh user data received:", userRes);
       setUser(userRes);
-      setPosts(postRes);
+      setPosts(Array.isArray(postRes) ? postRes : []);
       
       // Update localStorage with fresh data
       localStorage.setItem("user", JSON.stringify(userRes));
@@ -137,7 +137,7 @@ const ProfilePage = () => {
         return res.json();
       });
       
-      setSavedPosts(saved);
+      setSavedPosts(Array.isArray(saved) ? saved : []);
     } catch (error) {
       console.error("❌ Error fetching saved posts:", error);
     }

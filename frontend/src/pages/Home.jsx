@@ -3,6 +3,7 @@ import Sidebar from "../components/Sidebar";
 import PostCard from "../components/PostCard";
 import Suggestions from "../components/Suggestions";
 import { useEffect, useState } from "react";
+import { getApiUrl } from "../config/api.js";
 import axios from "axios";
 
 const useFetchPosts = () => {
@@ -13,12 +14,12 @@ const useFetchPosts = () => {
     const fetchPosts = async () => {
       try {
         const token = localStorage.getItem('authToken');
-        const res = await axios.get("/api/posts", {
+        const res = await axios.get(getApiUrl("/api/posts"), {
           headers: {
             Authorization: `Bearer ${token}`
           }
         });
-        setPosts(res.data);
+        setPosts(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         console.error("Error fetching posts:", err);
         // If unauthorized, redirect to login
