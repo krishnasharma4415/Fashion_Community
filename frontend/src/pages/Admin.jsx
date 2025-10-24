@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaHome, FaUsers, FaFlag, FaBell, FaBars } from "react-icons/fa";
+import { getApiUrl } from "../config/api.js";
 import logo from "../assets/logo.png";
 
 const statsData = {
@@ -31,7 +32,7 @@ const Admin = () => {
 
     const fetchStats = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/admin/stats", {
+        const res = await fetch(getApiUrl("/api/admin/stats"), {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -43,7 +44,7 @@ const Admin = () => {
 
     const fetchRecentUsers = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/admin/users", {
+        const res = await fetch(getApiUrl("/api/admin/users"), {
           headers: { Authorization: `Bearer ${token}` },
         });
         const users = await res.json();

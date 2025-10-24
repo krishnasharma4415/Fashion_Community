@@ -6,6 +6,7 @@ import PostCard from "../components/PostCard";
 import PostDetails from "../components/PostDetails";
 import axios from "axios";
 import { getProfilePictureUrl } from "../utils/imageUtils";
+import { getApiUrl } from "../config/api";
 import "../styles/Profile.css";
 
 const UserProfile = () => {
@@ -43,10 +44,10 @@ const UserProfile = () => {
       
       // Fetch user profile with stats
       const [userRes, postsRes] = await Promise.all([
-        axios.get(`http://localhost:5000/api/users/${userId}/profile`, {
+        axios.get(getApiUrl(`/api/users/${userId}/profile`), {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`http://localhost:5000/api/posts/user/${userId}`, {
+        axios.get(getApiUrl(`/api/posts/user/${userId}`), {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
@@ -83,7 +84,7 @@ const UserProfile = () => {
       
       if (user.isFollowing) {
         // Unfollow
-        await axios.delete(`http://localhost:5000/api/follows/${userId}`, {
+        await axios.delete(getApiUrl(`/api/follows/${userId}`), {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUser(prev => ({
@@ -93,7 +94,7 @@ const UserProfile = () => {
         }));
       } else {
         // Follow
-        await axios.post(`http://localhost:5000/api/follows/${userId}`, {}, {
+        await axios.post(getApiUrl(`/api/follows/${userId}`), {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUser(prev => ({

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "../config/api.js";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/Sidebar";
 import {
@@ -55,7 +56,7 @@ const EditProfilePage = () => {
         }
 
         console.log("Testing token:", token);
-        const tokenTest = await fetch("http://localhost:5000/api/auth/check-token", {
+        const tokenTest = await fetch(getApiUrl("/api/auth/check-token"), {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`
@@ -72,7 +73,7 @@ const EditProfilePage = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/api/users/${userId}`, {
+        const response = await fetch(getApiUrl(`/api/users/${userId}`), {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -203,14 +204,14 @@ const EditProfilePage = () => {
 
       const userId = JSON.parse(localStorage.getItem("user") || "{}")._id;
       console.log("Testing token with user fetch:", userId);
-      const userTest = await fetch(`http://localhost:5000/api/users/${userId}`, {
+      const userTest = await fetch(getApiUrl(`/api/users/${userId}`), {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       console.log("User fetch test result:", userTest.status);
 
-      const response = await fetch("http://localhost:5000/api/users/profile", {
+      const response = await fetch(getApiUrl("/api/users/profile"), {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`

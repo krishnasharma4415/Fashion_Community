@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import PostCard from "../components/PostCard";
 import PostDetails from "../components/PostDetails";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "../config/api.js";
 import { getProfilePictureUrl } from "../utils/imageUtils";
 import "../styles/Profile.css";
 
@@ -36,7 +37,7 @@ const ProfilePage = () => {
       console.log("Fetching fresh user data for ID:", userId);
       
       const [userRes, postRes] = await Promise.all([
-        fetch(`http://localhost:5000/api/users/${userId}/profile`, {
+        fetch(getApiUrl(`/api/users/${userId}/profile`), {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -47,7 +48,7 @@ const ProfilePage = () => {
           }
           return res.json();
         }),
-        fetch(`http://localhost:5000/api/posts/user/${userId}`, {
+        fetch(getApiUrl(`/api/posts/user/${userId}`), {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -127,7 +128,7 @@ const ProfilePage = () => {
     if (!userId || !token) return;
 
     try {
-      const saved = await fetch(`http://localhost:5000/api/posts/saved/${userId}`, {
+      const saved = await fetch(getApiUrl(`/api/posts/saved/${userId}`), {
         headers: {
           Authorization: `Bearer ${token}`
         }

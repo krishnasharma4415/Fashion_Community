@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "../config/api.js";
 import axios from "axios";
 import { 
   Users, 
@@ -36,7 +37,7 @@ export default function Suggestions() {
         return;
       }
 
-      const response = await axios.get("http://localhost:5000/api/recommendations/users?limit=15", {
+      const response = await axios.get(getApiUrl("/api/recommendations/users?limit=15"), {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -71,7 +72,7 @@ export default function Suggestions() {
         return;
       }
 
-      await axios.post(`http://localhost:5000/api/follows/${userId}`, {}, {
+      await axios.post(getApiUrl(`/api/follows/${userId}`), {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
 

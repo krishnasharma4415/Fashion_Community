@@ -8,10 +8,11 @@ import {
   HeartIcon as HeartIconSolid,
   BookmarkIcon as BookmarkSolidIcon
 } from '@heroicons/react/24/solid';
+import { getApiUrl } from '../config/api.js';
+import axios from 'axios';
 import { getProfilePictureUrl, getMediaUrl } from '../utils/imageUtils';
 import PostDetails from './PostDetails';
 import FollowButton from './FollowButton';
-import axios from 'axios';
 
 const ExplorePostCard = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -31,7 +32,7 @@ const ExplorePostCard = ({ post }) => {
       return mediaUrl;
     }
     // For legacy local uploads, construct the full URL
-    return `http://localhost:5000${mediaUrl}`;
+    return getApiUrl(mediaUrl);
   };
 
   const checkLikeStatus = async () => {
@@ -39,7 +40,7 @@ const ExplorePostCard = ({ post }) => {
       const token = localStorage.getItem("authToken");
       if (!token) return;
       
-      const response = await fetch(`http://localhost:5000/api/likes/${post._id}/status`, {
+      const response = await fetch(getApiUrl(`/api/likes/${post._id}/status`), {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -61,7 +62,7 @@ const ExplorePostCard = ({ post }) => {
     if (!userId || !post._id) return;
 
     try {
-      const res = await axios.get(`http://localhost:5000/api/posts/saved/${userId}`);
+      const res = await axios.get(getApiUrl(`/api/posts/saved/${userId}`));
       const savedPostIds = res.data.map(p => p._id);
       setIsSaved(savedPostIds.includes(post._id));
     } catch (err) {
@@ -78,7 +79,7 @@ const ExplorePostCard = ({ post }) => {
     }
 
     try {
-      const url = `http://localhost:5000/api/likes/${post._id}`;
+      const url = getApiUrl(`/api/likes/${post._id}`);
       const method = isLiked ? 'DELETE' : 'POST';
 
       const response = await fetch(url, {
@@ -105,7 +106,7 @@ const ExplorePostCard = ({ post }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:5000/api/posts/save/${post._id}`,
+        getApiUrl(`/api/posts/save/${post._id}`),
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
+import { getApiUrl } from '../config/api.js';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -19,7 +20,7 @@ const EditProfile = () => {
       setUsername(user.username || '');
       setName(user.name || '');
       setBio(user.bio || '');
-      setPreviewUrl(user.profilePicture ? `http://localhost:5000${user.profilePicture}` : null);
+      setPreviewUrl(user.profilePicture ? getApiUrl(user.profilePicture) : null);
     }
   }, []);
 
@@ -43,7 +44,7 @@ const EditProfile = () => {
 
       const token = localStorage.getItem('authToken');
 
-      const res = await axios.put('http://localhost:5000/api/users/profile', formData, {
+      const res = await axios.put(getApiUrl('/api/users/profile'), formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getApiUrl } from "../config/api.js";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import axios from "axios";
@@ -137,7 +138,7 @@ const NewPost = () => {
 
   const getMediaUrl = (url) => {
     if (url?.startsWith('http')) return url;
-    return `http://localhost:5000${url}`;
+    return getApiUrl(url);
   };
 
   const handleSubmit = async () => {
@@ -166,7 +167,7 @@ const NewPost = () => {
 
       console.log("Using token:", token);
 
-      const response = await axios.post("http://localhost:5000/api/posts", formData, {
+      const response = await axios.post(getApiUrl("/api/posts"), formData, {
         headers: {
           Authorization: `Bearer ${token}`
         },

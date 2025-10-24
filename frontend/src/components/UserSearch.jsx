@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { getApiUrl } from '../config/api.js';
 import axios from 'axios';
 import { getProfilePictureUrl } from '../utils/imageUtils';
 
@@ -26,7 +27,7 @@ const UserSearch = ({ isOpen, onClose }) => {
     setLoading(true);
     try {
       const token = localStorage.getItem('authToken');
-      const response = await axios.get(`http://localhost:5000/api/users/search?q=${encodeURIComponent(searchQuery)}`, {
+      const response = await axios.get(getApiUrl(`/api/users/search?q=${encodeURIComponent(searchQuery)}`), {
         headers: { Authorization: `Bearer ${token}` }
       });
       setSearchResults(response.data);

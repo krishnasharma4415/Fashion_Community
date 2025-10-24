@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaHeart, FaRegHeart, FaRegComment, FaRegBookmark, FaTimes } from "react-icons/fa";
+import { getApiUrl } from "../config/api.js";
 import { getProfilePictureUrl, getMediaUrl } from "../utils/imageUtils";
 
 export default function PostDetails({ post, onClose }) {
@@ -16,7 +17,7 @@ export default function PostDetails({ post, onClose }) {
 
   const fetchComments = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/comments/${post._id}`);
+      const response = await fetch(getApiUrl(`/api/comments/${post._id}`));
       const data = await response.json();
       if (Array.isArray(data)) {
         setComments(data);
@@ -30,7 +31,7 @@ export default function PostDetails({ post, onClose }) {
     try {
       const token = localStorage.getItem('authToken');
       if (!token) return;
-      const response = await fetch(`http://localhost:5000/api/likes/${post._id}/status`, {
+      const response = await fetch(getApiUrl(`/api/likes/${post._id}/status`), {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -53,7 +54,7 @@ export default function PostDetails({ post, onClose }) {
       }
 
       if (isLiked) {
-        const response = await fetch(`http://localhost:5000/api/likes/${post._id}`, {
+        const response = await fetch(getApiUrl(`/api/likes/${post._id}`), {
           method: 'DELETE',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -64,7 +65,7 @@ export default function PostDetails({ post, onClose }) {
           setLikeCount(prev => Math.max(0, prev - 1));
         }
       } else {
-        const response = await fetch(`http://localhost:5000/api/likes/${post._id}`, {
+        const response = await fetch(getApiUrl(`/api/likes/${post._id}`), {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token}`
@@ -94,7 +95,7 @@ export default function PostDetails({ post, onClose }) {
 
       setLoading(true);
 
-      const response = await fetch(`http://localhost:5000/api/comments/${post._id}`, {
+      const response = await fetch(getApiUrl(`/api/comments/${post._id}`), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -132,7 +133,7 @@ export default function PostDetails({ post, onClose }) {
       return url;
     }
     // For legacy local uploads, construct the full URL
-    return `http://localhost:5000${url}`;
+    return getApiUrl(url);
   };
 
   return (

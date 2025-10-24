@@ -17,7 +17,7 @@ export const getProfilePictureUrl = (profilePicture) => {
   }
   
   // If it's a local path, prepend the server URL
-  return `http://localhost:5000${profilePicture}`;
+  return `${import.meta.env.VITE_API_URL || 'https://fashion-community-backend.onrender.com'}${profilePicture}`;
 };
 
 /**
@@ -28,5 +28,5 @@ export const getProfilePictureUrl = (profilePicture) => {
 export const getMediaUrl = (url) => {
   if (!url) return '';
   if (url.startsWith('http')) return url;
-  return `http://localhost:5000${url}`;
+  return `${import.meta.env.VITE_API_URL || 'https://fashion-community-backend.onrender.com'}${url}`;
 };
