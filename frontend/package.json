@@ -1,7 +1,8 @@
 {
-  "name": "frontend",
+  "name": "fashion-community-frontend",
+  "description": "Fashion Community - A social platform for fashion enthusiasts",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "nodemon --ext js,jsx,ts,tsx --exec vite",
