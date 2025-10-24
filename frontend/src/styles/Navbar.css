@@ -3,17 +3,18 @@
   justify-content: space-between;
   align-items: center;
   background: #8c9cc8;
-  height: 48px;
+  height: 56px;
   padding: 0 32px;
   position: sticky;
   top: 0;
   z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-logo {
   font-weight: 700;
-  font-size: 20px;
-  color: #222;
+  font-size: 24px;
+  color: #fff;
   letter-spacing: 1px;
 }
 
@@ -24,44 +25,73 @@
 }
 
 .navbar-profile-btn {
-  background: none;
-  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  padding: 4px;
+  padding: 8px;
   display: flex;
   align-items: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.navbar-profile-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar-profile-btn svg {
+  color: #fff;
 }
 
 .navbar-dropdown {
   position: absolute;
   right: 0;
-  top: 38px;
+  top: 50px;
   background: #fff;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.13);
-  border-radius: 6px;
-  min-width: 120px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  min-width: 160px;
   display: flex;
   flex-direction: column;
   z-index: 999;
-  animation: fadeIn 0.15s;
+  animation: slideDown 0.2s ease-out;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px);}
-  to { opacity: 1; transform: translateY(0);}
+@keyframes slideDown {
+  from { 
+    opacity: 0; 
+    transform: translateY(-10px);
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0);
+  }
 }
 
 .dropdown-item {
   background: none;
   border: none;
-  padding: 12px 18px;
+  padding: 12px 20px;
   text-align: left;
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  color: #222;
-  transition: background 0.17s;
+  color: #333;
+  transition: background-color 0.15s ease;
 }
 
 .dropdown-item:hover {
-  background: #f0f0f0;
+  background-color: #f5f5f5;
+}
+
+.dropdown-item:first-child {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.dropdown-item:last-child {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }

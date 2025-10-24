@@ -1,14 +1,27 @@
-const tf = require('@tensorflow/tfjs');
+// Optional dependencies - graceful fallback if not installed
+let tf, NlpManager;
+try {
+  tf = require('@tensorflow/tfjs');
+  NlpManager = require('node-nlp').NlpManager;
+} catch (error) {
+  console.warn('ML dependencies not installed, using basic keyword matching');
+}
+
 const fashionKeywords = require('../models/fashion-keywords.json');
-const { NlpManager } = require('node-nlp');
 
-const nlpManager = new NlpManager({ languages: ['en'] });
+let nlpManager;
 
-(async function() {
-  await initializeClassifier();
-})();
+if (NlpManager) {
+  nlpManager = new NlpManager({ languages: ['en'] });
+  
+  (async function() {
+    await initializeClassifier();
+  })();
+}
 
 async function initializeClassifier() {
+  if (!nlpManager) return;
+  
   fashionKeywords.positive.forEach(keyword => {
     nlpManager.addDocument('en', keyword, 'fashion');
   });
@@ -40,15 +53,31 @@ exports.validateText = async (text) => {
     };
   }
   
-  const result = await nlpManager.process('en', cleanedText);
-  
-  const isFashion = result.intent === 'fashion' && result.score > 0.7;
-  
-  return {
-    isFashionRelated: isFashion,
-    confidence: result.score,
-    analysis: result
-  };
+  // Use NLP if available, otherwise fall back to keyword matching
+  if (nlpManager) {
+    const result = await nlpManager.process('en', cleanedText);
+    const isFashion = result.intent === 'fashion' && result.score > 0.7;
+    
+    return {
+      isFashionRelated: isFashion,
+      confidence: result.score,
+      analysis: result
+    };
+  } else {
+    // Basic keyword matching fallback
+    const hasFashionKeywords = fashionKeywords.positive.some(keyword => 
+      cleanedText.includes(keyword.toLowerCase())
+    );
+    const hasNonFashionKeywords = fashionKeywords.negative.some(keyword => 
+      cleanedText.includes(keyword.toLowerCase())
+    );
+    
+    return {
+      isFashionRelated: hasFashionKeywords && !hasNonFashionKeywords,
+      confidence: hasFashionKeywords ? 0.8 : 0.2,
+      analysis: { method: 'keyword_matching' }
+    };
+  }
 };
 
 exports.validateImage = async (imageUrl) => {

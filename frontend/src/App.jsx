@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import Home from "./pages/Home.jsx";
 import Updates from "./pages/Updates.jsx";
 import Profile from "./pages/ProfilePage.jsx";
+import UserProfile from "./pages/UserProfile.jsx";
 import Explore from "./pages/Explore.jsx";
 import PostCreation from "./pages/PostCreation.jsx";
 import Login from "./pages/Login.jsx";
@@ -10,7 +11,6 @@ import './index.css';
 import './App.css';
 import Admin from "./pages/Admin.jsx";
 import EditProfilePage from "./pages/EditProfilePage.jsx";
-import FollowProfile from "./components/FollowProfile.jsx";
 
 export default function App() {
 
@@ -27,7 +27,7 @@ export default function App() {
       <Route path="/signup" element={<Signup />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />
-      <Route path="/profile/:profileId" element={<FollowProfile />} />
+      <Route path="/profile/:userId" element={<UserProfile />} />
     </Routes>
   );
 }

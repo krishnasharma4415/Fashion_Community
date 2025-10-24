@@ -60,4 +60,23 @@ router.get("/:postId", async (req, res) => {
   }
 });
 
+// Check if current user has liked a post
+router.get("/:postId/status", auth, async (req, res) => {
+  try {
+    const existingLike = await Like.findOne({ 
+      userId: req.user.id, 
+      postId: req.params.postId 
+    });
+    
+    const likeCount = await Like.countDocuments({ postId: req.params.postId });
+    
+    res.json({ 
+      isLiked: !!existingLike,
+      likeCount: likeCount
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;

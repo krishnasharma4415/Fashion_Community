@@ -12,8 +12,7 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use('/uploads/profiles', express.static(path.join(__dirname, 'uploads/profiles')));
+// Cloudinary handles file serving, no need for local uploads static serving
 
 app.use('/api/admin', require('./routes/admin'));
 app.use("/api/auth", require("./routes/auth"));
@@ -24,10 +23,18 @@ app.use("/api/likes", require("./routes/like"));
 app.use("/api/follows", require("./routes/follow"));
 app.use("/api/recommendations", require("./routes/recommendation"));
 
-app.use(express.static(path.join(__dirname, '../frontend/build')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
-});
+// Serve static files only in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  });
+} else {
+  // In development, just send a simple message for non-API routes
+  app.get('*', (req, res) => {
+    res.json({ message: 'API is running. Frontend is served separately in development.' });
+  });
+}
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -4,6 +4,7 @@ import Sidebar from "../components/Sidebar";
 import PostCard from "../components/PostCard";
 import PostDetails from "../components/PostDetails";
 import { useNavigate } from "react-router-dom";
+import { getProfilePictureUrl } from "../utils/imageUtils";
 import "../styles/Profile.css";
 
 const ProfilePage = () => {
@@ -19,6 +20,59 @@ const ProfilePage = () => {
 
   const openPost = (post) => setSelectedPost(post);
   const closePost = () => setSelectedPost(null);
+
+  const fetchUserData = async () => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    const userId = userData?._id;
+    const token = localStorage.getItem("authToken");
+
+    if (!userId || !token) {
+      setError("User not authenticated. Please log in.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      console.log("Fetching fresh user data for ID:", userId);
+      
+      const [userRes, postRes] = await Promise.all([
+        fetch(`http://localhost:5000/api/users/${userId}/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }).then(res => {
+          if (!res.ok) {
+            console.error("User fetch failed with status:", res.status);
+            throw new Error(`Failed to fetch user: ${res.status}`);
+          }
+          return res.json();
+        }),
+        fetch(`http://localhost:5000/api/posts/user/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }).then(res => {
+          if (!res.ok) {
+            console.error("Posts fetch failed with status:", res.status);
+            throw new Error(`Failed to fetch posts: ${res.status}`);
+          }
+          return res.json();
+        }),
+      ]);
+
+      console.log("Fresh user data received:", userRes);
+      setUser(userRes);
+      setPosts(postRes);
+      
+      // Update localStorage with fresh data
+      localStorage.setItem("user", JSON.stringify(userRes));
+    } catch (error) {
+      console.error("❌ Error fetching profile data:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const checkAuthentication = async () => {
@@ -40,62 +94,30 @@ const ProfilePage = () => {
       return true;
     };
     
-    const fetchData = async () => {
+    const initializeProfile = async () => {
       const isAuthenticated = await checkAuthentication();
       if (!isAuthenticated) return;
       
-      const userData = JSON.parse(localStorage.getItem("user"));
-      const userId = userData?._id;
-      const token = localStorage.getItem("authToken");
-
-      if (!userId || !token) {
-        setError("User not authenticated. Please log in.");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        console.log("Fetching user data for ID:", userId);
-        console.log("Using token:", token.substring(0, 10) + "...");
-        
-        const [userRes, postRes] = await Promise.all([
-          fetch(`http://localhost:5000/api/users/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }).then(res => {
-            if (!res.ok) {
-              console.error("User fetch failed with status:", res.status);
-              throw new Error(`Failed to fetch user: ${res.status}`);
-            }
-            return res.json();
-          }),
-          fetch(`http://localhost:5000/api/posts/user/${userId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`
-            }
-          }).then(res => {
-            if (!res.ok) {
-              console.error("Posts fetch failed with status:", res.status);
-              throw new Error(`Failed to fetch posts: ${res.status}`);
-            }
-            return res.json();
-          }),
-        ]);
-
-        console.log("User data received:", userRes);
-        setUser(userRes);
-        setPosts(postRes);
-      } catch (error) {
-        console.error("❌ Error fetching profile data:", error);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
+      await fetchUserData();
     };
 
-    fetchData();
+    initializeProfile();
   }, [navigate]);
+
+  // Listen for storage changes (when returning from edit profile)
+  useEffect(() => {
+    const handleStorageChange = () => {
+      console.log("Storage changed, refreshing profile data");
+      fetchUserData();
+    };
+
+    // Listen for custom event when profile is updated
+    window.addEventListener('profileUpdated', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('profileUpdated', handleStorageChange);
+    };
+  }, []);
 
   const fetchSavedPosts = async () => {
     const userData = JSON.parse(localStorage.getItem("user"));
@@ -168,7 +190,7 @@ const ProfilePage = () => {
             <div className="profile-header">
               <div className="profile-avatar">
                 <img
-                  src={user.profilePicture ? `http://localhost:5000${user.profilePicture}` : "https://via.placeholder.com/150"}
+                  src={getProfilePictureUrl(user.profilePicture)}
                   alt="Profile"
                   className="avatar-img"
                 />
@@ -185,9 +207,9 @@ const ProfilePage = () => {
                 </div>
                 
                 <div className="profile-stats">
-                  <span><strong>{posts.length}</strong> posts</span>
-                  <span><strong>{user.followers ? user.followers.length : 0}</strong> followers</span>
-                  <span><strong>{user.following ? user.following.length : 0}</strong> following</span>
+                  <span><strong>{user.stats?.posts || posts.length}</strong> posts</span>
+                  <span><strong>{user.stats?.followers || 0}</strong> followers</span>
+                  <span><strong>{user.stats?.following || 0}</strong> following</span>
                 </div>
                 <p className="bio">{user.bio || "Fashion lover"}</p>
               </div>

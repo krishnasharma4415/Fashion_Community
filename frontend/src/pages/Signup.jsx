@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import logo from '../assets/logo.png';
 import '../styles/Auth.css';
 
 const Signup = () => {
@@ -69,6 +70,13 @@ const Signup = () => {
   return (
     <div className="auth-container">
       <div className="auth-form animate-slideup">
+        <div className="flex justify-center mb-4">
+          <img 
+            src={logo} 
+            alt="Fashion Community" 
+            className="h-12 w-auto"
+          />
+        </div>
         <h2>Sign Up</h2>
         {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>

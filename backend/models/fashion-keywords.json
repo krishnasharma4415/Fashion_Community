@@ -1,0 +1,29 @@
+{
+  "positive": [
+    "fashion", "style", "outfit", "dress", "shirt", "pants", "shoes", "accessories",
+    "trendy", "chic", "elegant", "casual", "formal", "vintage", "modern", "designer",
+    "clothing", "apparel", "wardrobe", "look", "ensemble", "attire", "garment",
+    "fabric", "textile", "pattern", "color", "design", "trend", "seasonal",
+    "collection", "runway", "model", "photoshoot", "styling", "fashionable",
+    "streetwear", "haute couture", "ready-to-wear", "prêt-à-porter",
+    "profile", "pic", "picture", "photo", "selfie", "ootd", "today", "wearing",
+    "new", "love", "beautiful", "cute", "pretty", "cool", "awesome", "amazing"
+  ],
+  "negative": [
+    "food", "cooking", "recipe", "restaurant", "meal", "dinner", "lunch",
+    "politics", "government", "election", "vote", "political", "policy",
+    "sports", "football", "basketball", "soccer", "game", "match", "team",
+    "technology", "software", "programming", "code", "computer", "tech",
+    "medical", "health", "doctor", "hospital", "medicine", "treatment",
+    "travel", "vacation", "tourism", "hotel", "flight", "destination"
+  ],
+  "negative_hashtags": [
+    "food", "cooking", "recipe", "politics", "sports", "tech", "medical",
+    "travel", "vacation", "gaming", "music", "movies", "books", "education"
+  ],
+  "image_classes": [
+    "dress", "shirt", "pants", "shoes", "bag", "hat", "jacket", "skirt",
+    "blouse", "sweater", "coat", "boots", "sandals", "jewelry", "watch",
+    "sunglasses", "scarf", "belt", "tie", "suit", "jeans", "shorts"
+  ]
+}

@@ -1,6 +1,6 @@
 const API_BASE = "http://localhost:5000/api";
 
-const getToken = () => localStorage.getItem("token");
+const getToken = () => localStorage.getItem("authToken");
 
 const authHeader = () => ({
   headers: {
@@ -103,7 +103,10 @@ export const getLikeCount = async (postId) => {
 export const addComment = async (postId, content) => {
     const res = await fetch(`${API_BASE}/comments/${postId}`, {
       method: "POST",
-      headers: authHeader().headers,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getToken()}`
+      },
       body: JSON.stringify({ content })
     });
     return res.json();

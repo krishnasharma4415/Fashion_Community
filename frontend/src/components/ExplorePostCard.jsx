@@ -10,9 +10,10 @@ import {
 } from '@heroicons/react/24/solid';
 import { getProfilePictureUrl, getMediaUrl } from '../utils/imageUtils';
 import PostDetails from './PostDetails';
+import FollowButton from './FollowButton';
 import axios from 'axios';
 
-const PostCard = ({ post }) => {
+const ExplorePostCard = ({ post }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [likeCount, setLikeCount] = useState(post.likeCount || 0);
@@ -182,19 +183,27 @@ const PostCard = ({ post }) => {
           </div>
         </div>
 
-        {/* Enhanced user info with your color palette */}
-        <div className="absolute top-4 left-4 flex items-center space-x-3 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-white/50">
-          <div className="relative">
-            <img
-              src={getProfilePictureUrl(post.userId?.profilePicture)}
-              alt={post.userId?.username || 'User'}
-              className="w-8 h-8 rounded-full object-cover border-2 border-[#e0d7f9]"
-            />
-            <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+        {/* Enhanced user info with follow button */}
+        <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
+          <div className="flex items-center space-x-3 bg-white/95 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-white/50">
+            <div className="relative">
+              <img
+                src={getProfilePictureUrl(post.userId?.profilePicture)}
+                alt={post.userId?.username || 'User'}
+                className="w-8 h-8 rounded-full object-cover border-2 border-[#e0d7f9]"
+              />
+              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+            </div>
+            <span className="text-gray-800 text-sm font-semibold">
+              {post.userId?.username || 'Unknown'}
+            </span>
           </div>
-          <span className="text-gray-800 text-sm font-semibold">
-            {post.userId?.username || 'Unknown'}
-          </span>
+          
+          <FollowButton 
+            userId={post.userId?._id} 
+            username={post.userId?.username}
+            className="text-xs px-3 py-1"
+          />
         </div>
 
         {/* Subtle accent corner */}
@@ -211,4 +220,4 @@ const PostCard = ({ post }) => {
   );
 };
 
-export default PostCard;
+export default ExplorePostCard;

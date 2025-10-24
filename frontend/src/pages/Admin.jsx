@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaHome, FaUsers, FaFlag, FaBell, FaBars } from "react-icons/fa";
+import logo from "../assets/logo.png";
 
 const statsData = {
   totalUsers: 25,
@@ -26,7 +27,7 @@ const Admin = () => {
   const toggleSidebar = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("authToken");
 
     const fetchStats = async () => {
       try {
@@ -76,8 +77,12 @@ const Admin = () => {
         overflow-hidden md:overflow-visible`}
         role="navigation"
       >
-        <div className="p-4 font-bold text-xl">
-          FASHION.
+        <div className="p-4 flex justify-center">
+          <img 
+            src={logo} 
+            alt="Fashion Community" 
+            className="h-8 w-auto"
+          />
         </div>
 
         <div className="flex flex-col items-start py-8 px-4 space-y-6 flex-grow">

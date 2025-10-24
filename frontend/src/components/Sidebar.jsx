@@ -17,39 +17,55 @@ const Sidebar = () => {
   return (
     <>
       <div
-        className={`fixed top-0 left-0 h-full bg-[#f2ecf9] text-black z-40 transition-all duration-300 ease-in-out
-        ${isOpen ? "w-48" : "w-0"} 
-        md:static md:flex md:flex-col md:w-48 
+        className={`fixed top-0 left-0 h-full bg-[#f2ecf9] text-black z-40 transition-all duration-300 ease-in-out border-r border-white/30
+        ${isOpen ? "w-56" : "w-0"} 
+        md:static md:flex md:flex-col md:w-56 
         overflow-hidden md:overflow-visible`}
         role="navigation"
       >
-        <div className="flex flex-col items-start py-8 px-4 space-y-6 flex-grow">
+        <div className="flex flex-col py-8 px-6 space-y-2 flex-grow">
           {navItems.map((item, index) => (
             <Link
               to={item.path}
               key={index}
-              className="flex items-center space-x-4 hover:text-purple-600 cursor-pointer"
+              className="group flex items-center space-x-4 px-4 py-3 rounded-xl hover:bg-white/50 hover:text-[#8c9cc8] cursor-pointer transition-all duration-200 hover:shadow-sm"
             >
-              <div className="text-xl">{item.icon}</div>
-              {isOpen && <span className="text-sm font-medium">{item.label}</span>}
+              <div className="text-xl text-[#8c9cc8] group-hover:text-[#8c9cc8]">{item.icon}</div>
+              {isOpen && <span className="text-sm font-semibold">{item.label}</span>}
             </Link>
           ))}
 
+          {/* Divider */}
+          <div className="my-4 h-px bg-gradient-to-r from-transparent via-[#e0d7f9] to-transparent"></div>
+
           <Link to="/profile">
-            <div className="flex items-center space-x-4 hover:text-purple-600 cursor-pointer mt-4">
-              <img
-                src="https://i.pinimg.com/736x/83/05/bc/8305bcc8d0e550be62f69b111635b7f5.jpg"
-                alt="Profile"
-                className="w-6 h-6 rounded-full"
-              />
-              {isOpen && <span className="text-sm font-medium">Profile</span>}
+            <div className="group flex items-center space-x-4 px-4 py-3 rounded-xl hover:bg-white/50 hover:text-[#8c9cc8] cursor-pointer transition-all duration-200 hover:shadow-sm">
+              <div className="relative">
+                <img
+                  src="https://i.pinimg.com/736x/83/05/bc/8305bcc8d0e550be62f69b111635b7f5.jpg"
+                  alt="Profile"
+                  className="w-8 h-8 rounded-full border-2 border-[#e0d7f9] group-hover:border-[#9fb3df] transition-colors duration-200"
+                />
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
+              </div>
+              {isOpen && (
+                <div className="flex flex-col">
+                  <span className="text-sm font-semibold">Profile</span>
+                  <span className="text-xs text-gray-500">View your profile</span>
+                </div>
+              )}
             </div>
           </Link>
         </div>
 
-        <div className="md:hidden p-4 bg-[#e0d7f9] flex justify-center items-center">
-          <button onClick={toggleSidebar} aria-label="Toggle sidebar" className="text-2xl">
-            <FaBars />
+        {/* Footer for mobile */}
+        <div className="md:hidden p-4 bg-[#e0d7f9]/50 backdrop-blur-sm border-t border-white/30">
+          <button 
+            onClick={toggleSidebar} 
+            aria-label="Toggle sidebar" 
+            className="w-full flex justify-center items-center text-[#8c9cc8] hover:text-[#8c9cc8] transition-colors duration-200 p-2 rounded-lg hover:bg-white/30"
+          >
+            <FaBars className="text-xl" />
           </button>
         </div>
       </div>

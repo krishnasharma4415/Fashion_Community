@@ -5,6 +5,7 @@ const PostSchema = new mongoose.Schema({
     caption: { type: String, default: '' },
     media: [{ 
         url: { type: String, required: true }, 
+        publicId: { type: String }, // Cloudinary public ID for deletion
         type: { type: String, enum: ['image', 'video'], required: true } 
     }],
     likeCount: { type: Number, default: 0 },  
