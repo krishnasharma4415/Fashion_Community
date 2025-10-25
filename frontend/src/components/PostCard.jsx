@@ -194,7 +194,7 @@ const PostCard = ({ post }) => {
             <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
           </div>
           <span className="text-gray-800 text-sm font-semibold">
-            {post.userId?.username || 'Unknown'}
+            {post.userId?.displayName || post.userId?.username || 'Unknown'}
           </span>
         </div>
 

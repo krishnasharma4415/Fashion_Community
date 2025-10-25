@@ -110,8 +110,12 @@ const UserSearch = ({ isOpen, onClose }) => {
                     />
                   </div>
                   <div className="ml-4 flex-1">
-                    <h3 className="font-semibold text-gray-800">{user.username}</h3>
-                    <p className="text-sm text-gray-500">{user.email}</p>
+                    <h3 className="font-semibold text-gray-800">
+                      {user.displayName || user.username}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {user.displayName ? `@${user.username}` : user.email}
+                    </p>
                     {user.bio && (
                       <p className="text-sm text-gray-600 mt-1 truncate">{user.bio}</p>
                     )}

@@ -152,7 +152,14 @@ const UserProfile = () => {
               </div>
               <div className="profile-info">
                 <div className="flex items-center mb-4">
-                  <h1 className="username mr-4">{user.username}</h1>
+                  <div className="mr-4">
+                    {user.displayName && (
+                      <h1 className="text-2xl font-bold text-gray-800 mb-1">{user.displayName}</h1>
+                    )}
+                    <h2 className={`text-lg ${user.displayName ? 'text-gray-600' : 'text-2xl font-bold text-gray-800'}`}>
+                      @{user.username}
+                    </h2>
+                  </div>
                   <button 
                     onClick={handleFollowToggle}
                     disabled={followLoading}

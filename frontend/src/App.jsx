@@ -7,6 +7,7 @@ import Explore from "./pages/Explore.jsx";
 import PostCreation from "./pages/PostCreation.jsx";
 import Login from "./pages/Login.jsx";
 import Signup from "./pages/Signup.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 import './index.css';
 import './App.css';
 import Admin from "./pages/Admin.jsx";
@@ -25,6 +26,7 @@ export default function App() {
       <Route path="/post-creation" element={<PostCreation />} />
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/admin" element={<Admin />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />
       <Route path="/profile/:userId" element={<UserProfile />} />

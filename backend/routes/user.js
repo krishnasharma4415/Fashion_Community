@@ -36,8 +36,17 @@ router.put('/profile', auth, uploadProfile.single('profilePicture'), processProf
         user.username = req.body.username.trim();
       }
       
+      if (req.body.displayName !== undefined) {
+        user.displayName = req.body.displayName.trim();
+      }
+      
       if (req.body.bio !== undefined) {
         user.bio = req.body.bio;
+      }
+      
+      // Mark profile as completed for Google OAuth users
+      if (req.body.profileCompleted === 'true') {
+        user.profileCompleted = true;
       }
 
       // Handle profile picture upload
@@ -61,9 +70,12 @@ router.put('/profile', auth, uploadProfile.single('profilePicture'), processProf
         user: {
           _id: updatedUser._id,
           username: updatedUser.username,
+          displayName: updatedUser.displayName,
           email: updatedUser.email,
           bio: updatedUser.bio,
           profilePicture: updatedUser.profilePicture,
+          isGoogleUser: updatedUser.isGoogleUser,
+          profileCompleted: updatedUser.profileCompleted,
         },
       });
   } catch (error) {
@@ -89,12 +101,13 @@ router.get("/search", auth, async (req, res) => {
         {
           $or: [
             { username: searchRegex },
+            { displayName: searchRegex },
             { email: searchRegex }
           ]
         }
       ]
     })
-    .select('username email profilePicture bio')
+    .select('username displayName email profilePicture bio')
     .limit(20); // Limit results
 
     res.json(users);

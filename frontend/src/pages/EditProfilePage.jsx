@@ -22,6 +22,7 @@ import "../styles/Profile.css";
 
 const EditProfilePage = () => {
   const [username, setUsername] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [bio, setBio] = useState("");
   const [email, setEmail] = useState("");
   const [profilePicture, setProfilePicture] = useState(null);
@@ -32,6 +33,7 @@ const EditProfilePage = () => {
   const [isChanged, setIsChanged] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [isWelcomeFlow, setIsWelcomeFlow] = useState(false);
 
   const navigate = useNavigate();
 
@@ -40,6 +42,10 @@ const EditProfilePage = () => {
     if (!token) {
       navigate("/login");
     }
+    
+    // Check if this is a welcome flow from Google OAuth
+    const urlParams = new URLSearchParams(window.location.search);
+    setIsWelcomeFlow(urlParams.get('welcome') === 'true');
   }, [navigate]);
 
   useEffect(() => {
@@ -88,6 +94,7 @@ const EditProfilePage = () => {
         console.log("User data fetched:", data);
         setUserData(data);
         setUsername(data.username || "");
+        setDisplayName(data.displayName || "");
         setBio(data.bio || "");
         setEmail(data.email || "");
         setPreviewUrl(data.profilePicture ? getProfilePictureUrl(data.profilePicture) : getProfilePictureUrl(null));
@@ -160,6 +167,9 @@ const EditProfilePage = () => {
       case 'username':
         setUsername(value);
         break;
+      case 'displayName':
+        setDisplayName(value);
+        break;
       case 'bio':
         setBio(value);
         break;
@@ -184,15 +194,23 @@ const EditProfilePage = () => {
 
       const formData = new FormData();
       formData.append("username", username);
+      formData.append("displayName", displayName || "");
       formData.append("bio", bio || "");
       if (profilePicture) {
         formData.append("profilePicture", profilePicture);
       }
+      
+      // Mark profile as completed for Google OAuth users
+      if (isWelcomeFlow) {
+        formData.append("profileCompleted", "true");
+      }
 
       console.log("Submitting form data:", {
         username,
+        displayName,
         bio,
-        hasProfilePicture: !!profilePicture
+        hasProfilePicture: !!profilePicture,
+        isWelcomeFlow
       });
 
       console.log("Token being sent:", token);
@@ -239,7 +257,11 @@ const EditProfilePage = () => {
       const data = await response.json();
       console.log("Response data:", data);
 
-      setMessage({ text: "Profile updated successfully", type: "success" });
+      if (isWelcomeFlow) {
+        setMessage({ text: "Welcome to Fashion Community! Profile setup complete.", type: "success" });
+      } else {
+        setMessage({ text: "Profile updated successfully", type: "success" });
+      }
 
       const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
       const updatedUser = { ...currentUser, ...data.user };
@@ -254,7 +276,11 @@ const EditProfilePage = () => {
       }
 
       setTimeout(() => {
-        navigate("/profile");
+        if (isWelcomeFlow) {
+          navigate("/Home", { replace: true });
+        } else {
+          navigate("/profile");
+        }
       }, 1500);
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -277,6 +303,14 @@ const EditProfilePage = () => {
 
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto bg-[#f2ecf9]">
+          {/* Welcome Banner for Google OAuth users */}
+          {isWelcomeFlow && (
+            <div className="bg-gradient-to-r from-[#9fb3df] to-[#8c9cc8] text-white p-4 text-center">
+              <h3 className="font-semibold mb-1">🎉 Welcome to Fashion Community!</h3>
+              <p className="text-sm opacity-90">Let's personalize your profile to get started</p>
+            </div>
+          )}
+
           {/* Success/Error Messages */}
           {message.text && (
             <div className={`fixed top-20 left-1/2 transform -translate-x-1/2 z-50 px-6 py-3 rounded-lg shadow-lg flex items-center gap-2 ${message.type === "success"
@@ -303,8 +337,15 @@ const EditProfilePage = () => {
                   <ArrowLeft className="w-6 h-6 text-gray-600" />
                 </button>
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-800">Edit Profile</h1>
-                  <p className="text-gray-600">Update your profile information</p>
+                  <h1 className="text-2xl font-bold text-gray-800">
+                    {isWelcomeFlow ? "Complete Your Profile" : "Edit Profile"}
+                  </h1>
+                  <p className="text-gray-600">
+                    {isWelcomeFlow 
+                      ? "Let's set up your profile to get started" 
+                      : "Update your profile information"
+                    }
+                  </p>
                 </div>
               </div>
 
@@ -391,6 +432,25 @@ const EditProfilePage = () => {
                   {/* Form Section */}
                   <div className="lg:w-3/5 p-8">
                     <form onSubmit={handleSubmit} className="space-y-6">
+                      {/* Display Name */}
+                      <div>
+                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                          <User className="w-4 h-4" />
+                          Display Name
+                        </label>
+                        <input
+                          type="text"
+                          value={displayName}
+                          onChange={(e) => handleInputChange('displayName', e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9fb3df] focus:border-transparent transition-all"
+                          maxLength="50"
+                          placeholder="Enter your display name"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Your public display name (can be your real name)
+                        </p>
+                      </div>
+
                       {/* Username */}
                       <div>
                         <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
@@ -408,7 +468,7 @@ const EditProfilePage = () => {
                           placeholder="Enter your username"
                         />
                         <p className="text-xs text-gray-500 mt-1">
-                          3-20 characters, letters and numbers only
+                          3-20 characters, unique identifier for your profile
                         </p>
                       </div>
 
@@ -458,11 +518,17 @@ const EditProfilePage = () => {
                       <div className="flex gap-4 pt-6 border-t border-gray-100">
                         <button
                           type="button"
-                          onClick={() => navigate(-1)}
+                          onClick={() => {
+                            if (isWelcomeFlow) {
+                              navigate('/Home', { replace: true });
+                            } else {
+                              navigate(-1);
+                            }
+                          }}
                           className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                           disabled={loading}
                         >
-                          Cancel
+                          {isWelcomeFlow ? 'Skip for Now' : 'Cancel'}
                         </button>
                         <button
                           type="submit"
@@ -472,12 +538,12 @@ const EditProfilePage = () => {
                           {loading ? (
                             <>
                               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                              Updating...
+                              {isWelcomeFlow ? 'Setting up...' : 'Updating...'}
                             </>
                           ) : (
                             <>
                               <Save className="w-4 h-4" />
-                              Save Changes
+                              {isWelcomeFlow ? 'Complete Setup' : 'Save Changes'}
                             </>
                           )}
                         </button>
@@ -498,8 +564,11 @@ const EditProfilePage = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <h2 className="text-xl font-bold text-gray-800 mb-1">{username}</h2>
-                  <p className="text-gray-600 text-sm">{email}</p>
+                  <h2 className="text-xl font-bold text-gray-800 mb-1">
+                    {displayName || username}
+                  </h2>
+                  <p className="text-gray-600 text-sm">@{username}</p>
+                  <p className="text-gray-500 text-xs">{email}</p>
                 </div>
 
                 {/* Profile Stats */}

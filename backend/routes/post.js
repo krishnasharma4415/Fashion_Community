@@ -60,7 +60,7 @@ router.post('/', auth, uploadPost.array('media', 10), processPostUpload, async (
         console.log('✅ Post saved with ID:', newPost._id);
 
         // Populate user data before sending response
-        const populatedPost = await Post.findById(newPost._id).populate('userId', 'username profilePicture');
+        const populatedPost = await Post.findById(newPost._id).populate('userId', 'username displayName profilePicture');
         console.log('👤 Post populated with user data');
         
         res.status(201).json(populatedPost);
@@ -85,7 +85,7 @@ router.get("/", auth, async (req, res) => {
         
         // Get posts only from followed users (and own posts)
         const posts = await Post.find({ userId: { $in: followedUserIds } })
-            .populate("userId", "username profilePicture")
+            .populate("userId", "username displayName profilePicture")
             .sort({ timestamp: -1 }); // Most recent first
             
         res.json(posts);
@@ -99,7 +99,7 @@ router.get("/", auth, async (req, res) => {
 router.get("/explore", auth, async (req, res) => {
     try {
         const posts = await Post.find({ userId: { $ne: req.user.id } })
-            .populate("userId", "username profilePicture")
+            .populate("userId", "username displayName profilePicture")
             .sort({ timestamp: -1 }); // Most recent first
             
         res.json(posts);
@@ -112,7 +112,7 @@ router.get("/explore", auth, async (req, res) => {
 // Get all posts (admin/public endpoint - no auth required)
 router.get("/all", async (req, res) => {
     try {
-        const posts = await Post.find().populate("userId", "username profilePicture");
+        const posts = await Post.find().populate("userId", "username displayName profilePicture");
         res.json(posts);
     } catch (err) {
         res.status(500).json({ message: "Server error" });
@@ -121,7 +121,7 @@ router.get("/all", async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const post = await Post.findById(req.params.id).populate('userId', 'username profilePicture');
+        const post = await Post.findById(req.params.id).populate('userId', 'username displayName profilePicture');
         if (!post) return res.status(404).json({ message: 'Post not found' });
         res.json(post);
     } catch (err) {
@@ -168,7 +168,7 @@ router.get('/user/:userId', auth, async (req, res) => {
     try {
         const userPosts = await Post.find({ userId: req.params.userId })
             .sort({ timestamp: -1 }) // Most recent first
-            .populate('userId', 'username profilePicture');
+            .populate('userId', 'username displayName profilePicture');
         
         res.json(userPosts);
     } catch (err) {

@@ -1,10 +1,8 @@
 node_modules
 .venv
-dataset
-embeddings
-best_fashion_classifier.pth
-fashion_recommender/fashion_classifier_full.pth
-fashion_recommender/sample_image_embedding.npy
-.env
-fashion_recommender/cropped_clothing
+fashion_recommender
 uploads
+.kiro
+.env
+.env.example
+.env.production

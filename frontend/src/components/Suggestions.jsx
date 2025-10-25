@@ -189,10 +189,10 @@ export default function Suggestions() {
               onClick={() => handleUserClick(user._id)}
             >
               <p className="font-semibold text-gray-800 truncate hover:text-[#9fb3df] transition-colors">
-                {user.username}
+                {user.displayName || user.username}
               </p>
               <p className="text-xs text-gray-500 truncate">
-                {user.followedBy}
+                {user.displayName ? `@${user.username}` : user.followedBy}
               </p>
               {user.bio && (
                 <p className="text-xs text-gray-400 truncate mt-1">

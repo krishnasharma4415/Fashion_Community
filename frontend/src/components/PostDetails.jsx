@@ -171,8 +171,12 @@ export default function PostDetails({ post, onClose }) {
                   <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-800 text-lg">{post.userId?.username || 'Unknown'}</h3>
-                  <p className="text-sm text-gray-500">Fashion enthusiast</p>
+                  <h3 className="font-bold text-gray-800 text-lg">
+                    {post.userId?.displayName || post.userId?.username || 'Unknown'}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {post.userId?.displayName ? `@${post.userId?.username}` : 'Fashion enthusiast'}
+                  </p>
                 </div>
               </div>
               <button
@@ -191,7 +195,9 @@ export default function PostDetails({ post, onClose }) {
                   className="w-8 h-8 rounded-full object-cover"
                 />
                 <div>
-                  <span className="font-bold mr-1">{post.userId?.username || 'Unknown'}</span>
+                  <span className="font-bold mr-1">
+                    {post.userId?.displayName || post.userId?.username || 'Unknown'}
+                  </span>
                   <span>{post.caption}</span>
                   <p className="text-gray-400 text-xs mt-1">{formattedDate}</p>
                 </div>

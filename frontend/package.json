@@ -12,9 +12,11 @@
     "deploy": "node deploy.js && npm run build"
   },
   "dependencies": {
+    "@google-cloud/local-auth": "^3.0.1",
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.0.0",
     "axios": "^1.8.4",
+    "google-auth-library": "^10.4.2",
     "lucide-react": "^0.503.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",

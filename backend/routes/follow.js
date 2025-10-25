@@ -104,7 +104,7 @@ router.get("/:userId/status", auth, async (req, res) => {
 router.get("/:userId/followers", async (req, res) => {
   try {
     const followers = await Follow.find({ following: req.params.userId })
-      .populate("follower", "username profilePicture bio")
+      .populate("follower", "username displayName profilePicture bio")
       .sort({ timestamp: -1 });
     
     res.json(followers);
@@ -117,7 +117,7 @@ router.get("/:userId/followers", async (req, res) => {
 router.get("/:userId/following", async (req, res) => {
   try {
     const following = await Follow.find({ follower: req.params.userId })
-      .populate("following", "username profilePicture bio")
+      .populate("following", "username displayName profilePicture bio")
       .sort({ timestamp: -1 });
     
     res.json(following);

@@ -36,7 +36,7 @@ router.post("/:postId", auth, async (req, res) => {
 
 router.get("/:postId", async (req, res) => {
   try {
-    const comments = await Comment.find({ postId: req.params.postId }).populate("userId", "username");
+    const comments = await Comment.find({ postId: req.params.postId }).populate("userId", "username displayName");
     res.json(comments);
   } catch (err) {
     res.status(500).json({ message: "Server error" });
