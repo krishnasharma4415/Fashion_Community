@@ -9,7 +9,7 @@ import logo from '../assets/logo.png';
 import '../styles/Navbar.css';
 
 function Navbar() {
-  const { setIsAuthenticated } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -51,8 +51,7 @@ function Navbar() {
 
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    setIsAuthenticated(false);
+    logout();
     setOpen(false);
     navigate('/login'); 
   };

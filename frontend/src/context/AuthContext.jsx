@@ -23,7 +23,8 @@ export const AuthProvider = ({ children }) => {
           const userData = localStorage.getItem("user");
           if (userData) {
             try {
-              setUser(JSON.parse(userData));
+              const parsedUser = JSON.parse(userData);
+              setUser(parsedUser);
             } catch (error) {
               console.error("Error parsing user data:", error);
             }
@@ -43,11 +44,18 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (token, userData = null) => {
-    setIsAuthenticated(true);
+    // Token should already be stored by authService, but ensure it's there
+    if (token && !localStorage.getItem('authToken')) {
+      localStorage.setItem('authToken', token);
+    }
     
+    // Store user data
     if (userData) {
       setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
     }
+    
+    setIsAuthenticated(true);
   };
 
   const logout = () => {

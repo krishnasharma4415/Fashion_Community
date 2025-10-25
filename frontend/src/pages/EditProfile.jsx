@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import { getApiUrl } from '../config/api.js';
+import { getProfilePictureUrl } from '../utils/imageUtils';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -73,7 +74,7 @@ const EditProfile = () => {
               <div className="relative">
                 <div className="w-32 h-32 rounded-full overflow-hidden">
                   <img
-                    src={previewUrl || '/default-avatar.png'}
+                    src={previewUrl || getProfilePictureUrl(null)}
                     alt="Profile"
                     className="w-full h-full object-cover"
                   />

@@ -250,7 +250,7 @@ router.post("/google", async (req, res) => {
             // Existing user signing in
             if (!user.googleId) {
                 user.googleId = googleId;
-                user.profilePicture = user.profilePicture || imageUrl;
+                user.profilePicture = user.profilePicture || imageUrl || '';
                 user.isGoogleUser = true;
                 // For existing users, mark profile as completed if they have basic info
                 if (user.username && user.email) {
@@ -268,7 +268,7 @@ router.post("/google", async (req, res) => {
                 displayName: firstName || name || '', // Set display name from Google
                 email: email,
                 googleId: googleId,
-                profilePicture: imageUrl,
+                profilePicture: imageUrl || '', // Use Google image or default to empty string
                 bio: `Hi, I'm ${firstName || name}!`,
                 // No password needed for Google OAuth users
                 password: await bcrypt.hash(Math.random().toString(36), 10), // Random password as fallback
