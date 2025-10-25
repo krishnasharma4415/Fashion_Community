@@ -6,3 +6,4 @@ uploads
 .env
 .env.example
 .env.production
+.env.local

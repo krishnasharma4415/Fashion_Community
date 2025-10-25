@@ -220,10 +220,10 @@ const Signup = () => {
     
     login(userData.token, user);
     
-    // Check if this is a new Google user who needs to complete profile
-    if (userData.user.isGoogleUser && !userData.user.profileCompleted) {
-      showSuccess('Welcome to Fashion Community! Let\'s complete your profile.');
-      navigate('/edit-profile?welcome=true', { replace: true });
+    // Only redirect to profile setup for NEW Google users
+    if (userData.isNewUser && userData.user.isGoogleUser && !userData.user.profileCompleted) {
+      showSuccess('Welcome to Fashion Community! Let\'s set up your profile.');
+      navigate('/edit-profile?welcome=true&newUser=true', { replace: true });
     } else {
       showSuccess('Welcome back to Fashion Community!');
       navigate('/Home', { replace: true });

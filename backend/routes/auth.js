@@ -17,7 +17,12 @@ router.post("/register", async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ username, email, password: hashedPassword });
+        const newUser = new User({ 
+            username, 
+            email, 
+            password: hashedPassword,
+            profileCompleted: true // Regular signup users have completed profile setup
+        });
         await newUser.save();
         res.status(201).json({ success: true, message: "User registered successfully" });
     } catch (err) {
@@ -239,20 +244,27 @@ router.post("/google", async (req, res) => {
             ]
         });
 
+        let isNewUser = false;
+        
         if (user) {
-            // Update existing user with Google info if not already set
+            // Existing user signing in
             if (!user.googleId) {
                 user.googleId = googleId;
                 user.profilePicture = user.profilePicture || imageUrl;
                 user.isGoogleUser = true;
+                // For existing users, mark profile as completed if they have basic info
+                if (user.username && user.email) {
+                    user.profileCompleted = true;
+                }
                 await user.save();
             }
         } else {
-            // Create new user
-            const username = email.split('@')[0] + '_' + Math.random().toString(36).substr(2, 4);
+            // Create new user - they will need to complete profile setup
+            isNewUser = true;
+            const tempUsername = email.split('@')[0] + '_' + Math.random().toString(36).substr(2, 4);
             
             user = new User({
-                username: username,
+                username: tempUsername, // Temporary username, user will choose their own
                 displayName: firstName || name || '', // Set display name from Google
                 email: email,
                 googleId: googleId,
@@ -273,6 +285,7 @@ router.post("/google", async (req, res) => {
         res.json({
             success: true,
             token,
+            isNewUser, // Add flag to indicate if this is a new user
             user: {
                 _id: user._id,
                 username: user.username,

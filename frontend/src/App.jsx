@@ -5,7 +5,7 @@ import Profile from "./pages/ProfilePage.jsx";
 import UserProfile from "./pages/UserProfile.jsx";
 import Explore from "./pages/Explore.jsx";
 import PostCreation from "./pages/PostCreation.jsx";
-import Login from "./pages/Login.jsx";
+import Login from "./pages/LoginModern.jsx";
 import Signup from "./pages/Signup.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import './index.css';

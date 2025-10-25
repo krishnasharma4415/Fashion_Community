@@ -34,6 +34,9 @@ const EditProfilePage = () => {
   const [dragActive, setDragActive] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [isWelcomeFlow, setIsWelcomeFlow] = useState(false);
+  const [isNewUser, setIsNewUser] = useState(false);
+  const [usernameAvailable, setUsernameAvailable] = useState(null);
+  const [checkingUsername, setCheckingUsername] = useState(false);
 
   const navigate = useNavigate();
 
@@ -46,6 +49,7 @@ const EditProfilePage = () => {
     // Check if this is a welcome flow from Google OAuth
     const urlParams = new URLSearchParams(window.location.search);
     setIsWelcomeFlow(urlParams.get('welcome') === 'true');
+    setIsNewUser(urlParams.get('newUser') === 'true');
   }, [navigate]);
 
   useEffect(() => {
@@ -162,10 +166,48 @@ const EditProfilePage = () => {
     }
   };
 
+  // Username availability check for new users
+  const checkUsernameAvailability = async (username) => {
+    if (!username || username.length < 3) {
+      setUsernameAvailable(null);
+      return;
+    }
+
+    setCheckingUsername(true);
+    try {
+      const response = await fetch(getApiUrl("/api/auth/check-username"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username }),
+      });
+
+      const data = await response.json();
+      setUsernameAvailable(data.available);
+    } catch (error) {
+      console.error("Error checking username:", error);
+      setUsernameAvailable(null);
+    } finally {
+      setCheckingUsername(false);
+    }
+  };
+
   const handleInputChange = (field, value) => {
     switch (field) {
       case 'username':
         setUsername(value);
+        // For new users, check username availability
+        if (isNewUser && value !== userData?.username) {
+          setUsernameAvailable(null);
+          if (value.length >= 3) {
+            // Debounce the username check
+            clearTimeout(window.usernameCheckTimeout);
+            window.usernameCheckTimeout = setTimeout(() => {
+              checkUsernameAvailability(value);
+            }, 500);
+          }
+        }
         break;
       case 'displayName':
         setDisplayName(value);
@@ -307,7 +349,12 @@ const EditProfilePage = () => {
           {isWelcomeFlow && (
             <div className="bg-gradient-to-r from-[#9fb3df] to-[#8c9cc8] text-white p-4 text-center">
               <h3 className="font-semibold mb-1">🎉 Welcome to Fashion Community!</h3>
-              <p className="text-sm opacity-90">Let's personalize your profile to get started</p>
+              <p className="text-sm opacity-90">
+                {isNewUser 
+                  ? "Let's set up your profile and choose your username" 
+                  : "Let's personalize your profile to get started"
+                }
+              </p>
             </div>
           )}
 
@@ -342,7 +389,9 @@ const EditProfilePage = () => {
                   </h1>
                   <p className="text-gray-600">
                     {isWelcomeFlow 
-                      ? "Let's set up your profile to get started" 
+                      ? isNewUser 
+                        ? "Choose your username and personalize your profile"
+                        : "Let's set up your profile to get started"
                       : "Update your profile information"
                     }
                   </p>
@@ -455,21 +504,48 @@ const EditProfilePage = () => {
                       <div>
                         <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                           <User className="w-4 h-4" />
-                          Username
+                          Username {isNewUser && <span className="text-red-500">*</span>}
                         </label>
-                        <input
-                          type="text"
-                          value={username}
-                          onChange={(e) => handleInputChange('username', e.target.value)}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#9fb3df] focus:border-transparent transition-all"
-                          required
-                          minLength="3"
-                          maxLength="20"
-                          placeholder="Enter your username"
-                        />
-                        <p className="text-xs text-gray-500 mt-1">
-                          3-20 characters, unique identifier for your profile
-                        </p>
+                        <div className="relative">
+                          <input
+                            type="text"
+                            value={username}
+                            onChange={(e) => handleInputChange('username', e.target.value)}
+                            className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-[#9fb3df] focus:border-transparent transition-all ${
+                              isNewUser && usernameAvailable === false 
+                                ? 'border-red-300 focus:ring-red-200' 
+                                : isNewUser && usernameAvailable === true
+                                ? 'border-green-300 focus:ring-green-200'
+                                : 'border-gray-300'
+                            }`}
+                            required
+                            minLength="3"
+                            maxLength="20"
+                            placeholder={isNewUser ? "Choose your username" : "Enter your username"}
+                          />
+                          {isNewUser && (
+                            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+                              {checkingUsername ? (
+                                <div className="w-4 h-4 border-2 border-gray-300 border-t-[#9fb3df] rounded-full animate-spin"></div>
+                              ) : usernameAvailable === true ? (
+                                <Check className="w-5 h-5 text-green-500" />
+                              ) : usernameAvailable === false ? (
+                                <X className="w-5 h-5 text-red-500" />
+                              ) : null}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex justify-between items-center mt-1">
+                          <p className="text-xs text-gray-500">
+                            {isNewUser ? "Choose a unique username (3-20 characters)" : "3-20 characters, unique identifier for your profile"}
+                          </p>
+                          {isNewUser && usernameAvailable === false && (
+                            <p className="text-xs text-red-500">Username not available</p>
+                          )}
+                          {isNewUser && usernameAvailable === true && (
+                            <p className="text-xs text-green-500">Username available!</p>
+                          )}
+                        </div>
                       </div>
 
                       {/* Email (Read-only) */}
@@ -532,7 +608,7 @@ const EditProfilePage = () => {
                         </button>
                         <button
                           type="submit"
-                          disabled={loading || !isChanged}
+                          disabled={loading || !isChanged || (isNewUser && usernameAvailable !== true) || checkingUsername}
                           className="flex-1 px-6 py-3 bg-[#9fb3df] text-white rounded-lg hover:bg-[#8c9cc8] disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
                         >
                           {loading ? (
